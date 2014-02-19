@@ -11,7 +11,7 @@
     <title>Welcome to Minds, Markets and Machines
 </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Minds, Markets, & Machines">
+    <meta name="description" content="Minds, Markets, and Machines">
     <meta name="author" content="Andre Pemmelaar">
     <script src="http://code.jquery.com/jquery-1.8.0.js"></script>
     <script src="http://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
@@ -33,132 +33,72 @@
           <li><a href="http://www.linkedin.com/pub/andre-pemmelaar/7a/43a/a83">LinkedIn</a></li>
           <li><a href="https://github.com/andy-p">github</a></li>
         </ul>
-        <h3 class="muted">Minds, Markets, &  Machines</h3>
+        <h3 class="muted">Minds, Markets, and Machines</h3>
       </div>
       <hr />
       <div class="row">
         <div class="span9" id="main">
           <h1>Welcome to Minds, Markets and Machines</h1>
 
-<p>This file demonstrates how to write literate F# script
-files (<code>*.fsx</code>) that can be transformed into nice HTML
-using the <code>literate.fsx</code> script from the <a href="http://tpetricek.github.com/FSharp.Formatting">F# Formatting
-package</a>.</p>
+<p>Wherein, we take a casual stroll through the intersection of <code>machine learning</code>, <code>quantitative analysis</code>, 
+and <code>functional programming</code>. I work in the field of what is now often called 'alpha discovery'.
+If you're not sure what that means, just think <code>data science for finance</code>.</p>
 
-<p>As you can see, a comment starting with double asterisk
-is treated as part of the document and is transformed 
-using Markdown, which means that you can use:</p>
+<p>Like data science in general, it encompasses a number of domains:</p>
 
 <ul>
-<li>Unordered or ordered lists</li>
-<li>Text formatting including <strong>bold</strong> and <em>emphasis</em></li>
+<li>Math</li>
+<li>Statistics analysis</li>
+<li>Machine learning</li>
+<li>Diverse programming skills</li>
 </ul>
 
-<p>And numerous other <a href="http://daringfireball.net/projects/markdown">Markdown</a> features.</p>
+<br>
 
-<h2>Writing F# code</h2>
+<p>It goes a bit further. To do it really well, you really need an understanding of</p>
 
-<p>Code that is not inside comment will be formatted as
-a sample snippet (which also means that you can 
-run it in Visual Studio or MonoDevelop).</p>
+<ul>
+<li>Behavioral economics</li>
+<li>Market structure (financial domain knowledge)</li>
+</ul>
 
-<table class="pre"><tr><td class="lines"><pre class="fssnip">
-<span class="l">1: </span>
-<span class="l">2: </span>
-<span class="l">3: </span>
-<span class="l">4: </span>
-<span class="l">5: </span>
-<span class="l">6: </span>
-</pre>
-</td>
-<td class="snippet"><pre class="fssnip">
-<span class="c">/// The Hello World of functional languages!</span>
-<span class="k">let</span> <span class="k">rec</span> <span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="i">factorial</span> <span onmouseout="hideTip(event, 'fs2', 2)" onmouseover="showTip(event, 'fs2', 2)" class="i">x</span> <span class="o">=</span> 
-  <span class="k">if</span> <span onmouseout="hideTip(event, 'fs2', 3)" onmouseover="showTip(event, 'fs2', 3)" class="i">x</span> <span class="o">=</span> <span class="n">0</span> <span class="k">then</span> <span class="n">1</span> 
-  <span class="k">else</span> <span onmouseout="hideTip(event, 'fs2', 4)" onmouseover="showTip(event, 'fs2', 4)" class="i">x</span> <span class="o">*</span> (<span onmouseout="hideTip(event, 'fs1', 5)" onmouseover="showTip(event, 'fs1', 5)" class="i">factorial</span> (<span onmouseout="hideTip(event, 'fs2', 6)" onmouseover="showTip(event, 'fs2', 6)" class="i">x</span> <span class="o">-</span> <span class="n">1</span>))
+<h2>Prepare to be tested (aka “Your pedigree means nothing”)</h2>
 
-<span class="k">let</span> <span onmouseout="hideTip(event, 'fs3', 7)" onmouseover="showTip(event, 'fs3', 7)" class="i">f10</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs1', 8)" onmouseover="showTip(event, 'fs1', 8)" class="i">factorial</span> <span class="n">10</span></pre>
-</td>
-</tr>
-</table>
+<p>It often feels like Kaggle only with more painful feedback.
+If you model doesn’t work out, you get a slap in the 'pnl face' from the market.
+Oh... and there’s plenty of feedback to go around.</p>
 
-<h2>Hiding code</h2>
+<h2>Actionable decisions from distant feedback</h2>
 
-<p>If you want to include some code in the source code, 
-but omit it from the output, you can use the <code>hide</code> 
-command.</p>
+<p>Perhaps most importantly, it is about creating models that produce 
+immediately actionable decisions where the feedback is distant in 
+time from the inputs used to make those decisions. In that sense, 
+it seems <code>closer to robotics than data science</code>.</p>
 
-<p>The value will be defined in the F# code and so you
-can use it from other (visible) code and get correct
-tool tips:</p>
+<h2>Wait... What's functional programming got to do with it?</h2>
 
-<table class="pre"><tr><td class="lines"><pre class="fssnip">
-<span class="l">1: </span>
-</pre>
-</td>
-<td class="snippet"><pre class="fssnip">
-<span class="k">let</span> <span onmouseout="hideTip(event, 'fs4', 9)" onmouseover="showTip(event, 'fs4', 9)" class="i">answer</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs5', 10)" onmouseover="showTip(event, 'fs5', 10)" class="i">hidden</span></pre>
-</td>
-</tr>
-</table>
+<p>Functional programming in uniquely suited to the task. There is of course
+all the stuff you hear about functional programming that is true for any domain.</p>
 
-<h2>Moving code around</h2>
+<ul>
+<li>Clean, concise code leading to fewer bugs and easier maintenance</li>
+<li>Immutability by default, which prevents a large class of errors.</li>
+<li>Concurrency - asynchronous programming is very easy, as is parallelism.</li>
+<li>Domain modelling is very easy and explicit</li>
+</ul>
 
-<p>Sometimes, it is useful to first explain some code that
-has to be located at the end of the snippet (perhaps 
-because it uses some definitions discussed in the middle).
-This can be done using <code>include</code> and <code>define</code> commands.</p>
+<br> 
 
-<p>The following snippet gets correct tool tips, even though
-it uses <code>laterFunction</code>:</p>
+<p>But there is one aspect that is seems under appreciated in my field.</p>
 
-<table class="pre"><tr><td class="lines"><pre class="fssnip">
-<span class="l">1: </span>
-<span class="l">2: </span>
-<span class="l">3: </span>
-</pre>
-</td>
-<td class="snippet"><pre class="fssnip">
-<span class="k">let</span> <span onmouseout="hideTip(event, 'fs7', 12)" onmouseover="showTip(event, 'fs7', 12)" class="i">sample</span> <span class="o">=</span> 
-  <span onmouseout="hideTip(event, 'fs6', 13)" onmouseover="showTip(event, 'fs6', 13)" class="i">laterFunction</span>()
-  <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs8', 14)" onmouseover="showTip(event, 'fs8', 14)" class="i">printfn</span> <span class="s">&quot;</span><span class="s">Got</span><span class="s">:</span><span class="s"> </span><span class="s">%</span><span class="s">s</span><span class="s">&quot;</span></pre>
-</td>
-</tr>
-</table>
+<h2>Agents, Agents, Agents</h2>
 
-<p>Then we can explain how <code>laterFunction</code> is defined:</p>
-
-<table class="pre"><tr><td class="lines"><pre class="fssnip">
-<span class="l">1: </span>
-<span class="l">2: </span>
-</pre>
-</td>
-<td class="snippet"><pre class="fssnip">
-<span class="k">let</span> <span onmouseout="hideTip(event, 'fs6', 11)" onmouseover="showTip(event, 'fs6', 11)" class="i">laterFunction</span>() <span class="o">=</span> 
-  <span class="s">&quot;</span><span class="s">Not</span><span class="s"> </span><span class="s">very</span><span class="s"> </span><span class="s">difficult</span><span class="s">,</span><span class="s"> </span><span class="s">is</span><span class="s"> </span><span class="s">it</span><span class="s">?</span><span class="s">&quot;</span></pre>
-</td>
-</tr>
-</table>
-
-<p>This example covers pretty much all features that are 
-currently implemented in <code>literate.fsx</code>, but feel free 
-to <a href="https://github.com/tpetricek/FSharp.Formatting">fork the project on GitHub</a> and add more 
-features or report bugs!</p>
-
-          <div class="tip" id="fs1">val factorial : x:int -&gt; int<br /><br />Full name: Demo.factorial<br /><em><br /><br />&#160;The Hello World of functional languages!</em></div>
-<div class="tip" id="fs2">val x : int</div>
-<div class="tip" id="fs3">val f10 : int<br /><br />Full name: Demo.f10</div>
-<div class="tip" id="fs4">val answer : int<br /><br />Full name: Demo.answer</div>
-<div class="tip" id="fs5">val hidden : int<br /><br />Full name: Demo.hidden<br /><em><br /><br />&#160;This is a hidden answer</em></div>
-<div class="tip" id="fs6">val laterFunction : unit -&gt; string<br /><br />Full name: Demo.laterFunction</div>
-<div class="tip" id="fs7">val sample : unit<br /><br />Full name: Demo.sample</div>
-<div class="tip" id="fs8">val printfn : format:Printf.TextWriterFormat&lt;&#39;T&gt; -&gt; &#39;T<br /><br />Full name: Microsoft.FSharp.Core.ExtraTopLevelOperators.printfn</div>
-          
+                    
         </div>
         <div class="span3">
 
           <ul class="nav nav-list" id="menu">
-            <li class="nav-header">Minds, Markets, &  Machines</li>
+            <li class="nav-header">Minds, Markets, and Machines</li>
             <li class="divider"></li> 
             A stroll through the intersection of machine learning (AI),
             functional programming and quantitative analysis. 
@@ -166,6 +106,7 @@ features or report bugs!</p>
             <li class="divider"></li>
             <li><a href="../index.html">Top</a></li>
             <li class="divider"></li>
+            
             <!--
 
               Here you can add links to other pages of the documentation 
