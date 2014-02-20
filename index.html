@@ -12,7 +12,7 @@
 </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Minds, Markets, and Machines">
-    <meta name="author" content="Andre Pemmelaar">
+    <meta name="author" content="Quantix Reseach">
     <script src="http://code.jquery.com/jquery-1.8.0.js"></script>
     <script src="http://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
     <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
@@ -40,58 +40,62 @@
         <div class="span9" id="main">
           <h1>Welcome to Minds, Markets and Machines</h1>
 
-<p>Wherein, we take a casual stroll through the intersection of <code>machine learning</code>, <code>quantitative analysis</code>, 
-and <code>functional programming</code>. I work in the field of what is now often called 'alpha discovery'.
-If you're not sure what that means, just think <code>data science for finance</code>.</p>
+<p>Wherein, we take a casual stroll through the intersection of <code>machine learning</code>, <code>quantitative analysis</code>, and <code>functional programming</code>. It’s a pretty interesting intersection. Machine learning and general AI are already beginning to rapidly transform the world around us. Functional programming seems to be an ideal programming paradigm to implement these ideas.  I see the next ten years bringing massive advances in the fields of ML, general AI, robotics, etc. Even if I wasn’t using some of this professionally, it would be of great interest to me.</p>
 
-<p>Like data science in general, it encompasses a number of domains:</p>
+<p>Professionally, I work in the field of what is often called 'alpha discovery'. (just think <code>data science for finance</code>)
+Like data science in general, it encompasses a number of domains:</p>
 
 <ul>
 <li>Math</li>
-<li>Statistics analysis</li>
+<li>Statistical analysis</li>
 <li>Machine learning</li>
 <li>Diverse programming skills</li>
 </ul>
 
 <br>
 
-<p>It goes a bit further. To do it really well, you really need an understanding of</p>
+<p>It goes a bit further. To do it really well you need an understanding of</p>
 
 <ul>
 <li>Behavioral economics</li>
 <li>Market structure (financial domain knowledge)</li>
+<li>Control theory</li>
+<li>Reinforcement learning (a branch of ML)</li>
 </ul>
-
-<h2>Prepare to be tested (aka “Your pedigree means nothing”)</h2>
-
-<p>It often feels like Kaggle only with more painful feedback.
-If you model doesn’t work out, you get a slap in the 'pnl face' from the market.
-Oh... and there’s plenty of feedback to go around.</p>
 
 <h2>Actionable decisions from distant feedback</h2>
 
-<p>Perhaps most importantly, it is about creating models that produce 
-immediately actionable decisions where the feedback is distant in 
-time from the inputs used to make those decisions. In that sense, 
-it seems <code>closer to robotics than data science</code>.</p>
+<p><a href="http://artint.info/html/ArtInt_262.html">Reinforcement Learning</a> isn't something you hear that much about, but it I think 2014 may see that change somewhat.  Already <a href="http://robotenomics.com/2014/01/27/googles-deepmind-acquisition-in-reinforcement-learning/">Google’s acquisition of Deep Mind</a> has generated some interest. RL is particularly important because it allows one to learn models that produce actionable decisions where the feedback is distant in time from the inputs used to make those decisions. For a fun example, check out “<a href="http://sarvagyavaish.github.io/FlappyBirdRL/">The RL Flappy Bird hack</a>”</p>
+
+<p>The Deep Learning train has been chuggin’ along with fantastic results and has produced <a href="http://www.youtube.com/watch?feature=player_embedded&amp;v=Nu-nlQqFCKg">some amazing advances</a>. The up and coming <a href="http://en.wikipedia.org/wiki/DARPA_Robotics_Challenge">DARPA 2012-2014 challenge</a> to develop semi-autonomous ground robots that can do "complex tasks” will undoubtedly focus more attention on reinforcement learning, and lead to similarly significant advances in the field. Expect to see some amazing results!</p>
 
 <h2>Wait... What's functional programming got to do with it?</h2>
 
-<p>Functional programming in uniquely suited to the task. There is of course
-all the stuff you hear about functional programming that is true for any domain.</p>
+<p>Functional programming is well suited to the task. There is of course
+all the usual stuff you hear about functional programming in general.</p>
 
 <ul>
 <li>Clean, concise code leading to fewer bugs and easier maintenance</li>
-<li>Immutability by default, which prevents a large class of errors.</li>
-<li>Concurrency - asynchronous programming is very easy, as is parallelism.</li>
-<li>Domain modelling is very easy and explicit</li>
+<li>Immutability by default, which prevents a large class of errors</li>
+<li>Concurrency - asynchronous programming is very easy, as is parallelism</li>
+<li>Domain modelling is easy and explicit</li>
 </ul>
 
 <br> 
 
-<p>But there is one aspect that is seems under appreciated in my field.</p>
+<p>But there is one aspect that is particularly useful when modelling real world event streams...</p>
 
 <h2>Agents, Agents, Agents</h2>
+
+<p>Agents are ideal for modelling multiple concurrent event streams. 
+Scott Wlaschin sums it up nicely in his post on <a href="http://fsharpforfunandprofit.com/posts/concurrency-actor-model/">Messages and agents</a>.</p>
+
+<p>“<strong>It encourages a "pipeline" model of programming with "producers" sending messages to decoupled "consumers"</strong>” <em></em></p>
+
+<p>As an example, a single agent can be created to handle each of the real-time streams of information, and then child agents can be created to handle the various transformations of the data. Finally, a master controlling agent can monitor the data produced to make decisions. The best thing about this is that you can use this same approach for both the simulations used in model building and in real-time systems. Concurrency and scalability can easily be built in.
+(Checkout Yan Cui's <a href="http://www.slideshare.net/theburningmonk?utm_campaign=profiletracking&amp;utm_medium=sssite&amp;utm_source=profile_hovercard">slides on Slideshare</a> for examples of scalability using AWS and F# in gaming)</p>
+
+<p>That is a brief overview of what I hope to cover here. Hopefully, you will enjoy reading it as much as I enjoy writing about it.</p>
 
                     
         </div>
@@ -101,13 +105,21 @@ all the stuff you hear about functional programming that is true for any domain.
             <li class="nav-header">Minds, Markets, and Machines</li>
             <li class="divider"></li> 
             A stroll through the intersection of machine learning (AI),
-            functional programming and quantitative analysis. 
+            functional programming, and quantitative analysis for finance.
             <br>
             <li class="divider"></li>
             <li><a href="../index.html">Top</a></li>
             <li class="divider"></li>
-            
-            <!--
+
+            <li class="nav-header">About Me</li>
+            Working on buy side for 10+ years. 
+            Currently designing models for an option market maker. 
+            Failing my way to sucessful ML and HFT models. 
+            User and abuser of machine learning and functional programming
+            <br>
+            機械学習 / 統計学 / 計量時系列分析
+            <li class="divider"></li>
+          <!--
 
               Here you can add links to other pages of the documentation 
               The 'divider' element creates a separator and additional
