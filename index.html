@@ -12,7 +12,7 @@
 </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Minds, Markets, and Machines">
-    <meta name="author" content="Quantix Reseach">
+    <meta name="author" content="Quantix Research">
     <script src="http://code.jquery.com/jquery-1.8.0.js"></script>
     <script src="http://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
     <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
@@ -71,8 +71,7 @@ Like data science in general, it encompasses a number of domains:</p>
 
 <h2>Wait... What's functional programming got to do with it?</h2>
 
-<p>Functional programming is well suited to the task. There is of course
-all the usual stuff you hear about functional programming in general.</p>
+<p>Functional programming is well suited to the task. There is all that great stuff you hear about functional programming.</p>
 
 <ul>
 <li>Clean, concise code leading to fewer bugs and easier maintenance</li>
@@ -97,7 +96,35 @@ Scott Wlaschin sums it up nicely in his post on <a href="http://fsharpforfunandp
 
 <p>That is a brief overview of what I hope to cover here. Hopefully, you will enjoy reading it as much as I enjoy writing about it.</p>
 
-                    
+            
+           <div id="comments">
+        <h2>Comments</h2>
+          <div id="header">
+            Want to leave a comment? Visit <a href="https://github.com/Andy-P/andy-p.github.io/issues/1"> this post's issue page on GitHub</a> (you'll need a GitHub account. What? Like you already don't have one?!).
+          </div>
+          <script type="text/javascript">
+            function loadComments(data) {
+              for (var i=0; i<data.length; i++) {
+                var cuser = data[i].user.login;
+                var cuserlink = "https://www.github.com/" + data[i].user.login;
+                var clink = "https://github.com/andy-p/andy-p.github.io/issues/1#issuecomment-" + data[i].url.substring(data[i].url.lastIndexOf("/")+1);
+                var cbody = data[i].body_html;
+                var cavatarlink = data[i].user.avatar_url;
+                var cdate = Date.parse(data[i].created_at).toString("yyyy-MM-dd HH:mm:ss");
+
+                $("#comments").append("<div class='comment'><div class='commentheader'><div class='commentgravatar'>" + '<img src="' + cavatarlink + '" alt="" width="20" height="20">' + "</div><a class='commentuser' href=\""+ cuserlink + "\">" + cuser + "</a><a class='commentdate' href=\"" + clink + "\">" + cdate + "</a></div><div class='commentbody'>" + cbody + "</div></div>");
+              }
+            }
+
+            $.ajax("https://api.github.com/repos/andy-p/andy-p.github.io/issues/1/comments?per_page=100", {
+              headers: {Accept: "application/vnd.github.full+json"},
+              dataType: "json",
+              success: function(msg){
+                loadComments(msg);
+             }
+            });
+          </script>
+        </div>        
         </div>
         <div class="span3">
 
@@ -117,8 +144,12 @@ Scott Wlaschin sums it up nicely in his post on <a href="http://fsharpforfunandp
             Failing my way to sucessful ML and HFT models. 
             User and abuser of machine learning and functional programming
             <br>
+            <br>
+            Based in Tokyo, Japan
+            <br>
+            <br>
             機械学習 / 統計学 / 計量時系列分析
-            <li class="divider"></li>
+            <li class="divider"></li> 
           <!--
 
               Here you can add links to other pages of the documentation 
