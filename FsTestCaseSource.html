@@ -124,7 +124,11 @@ This nicely simulates feeding in a series of events and getting back a series of
 
 <br>
 
-<p>Here how you can combine the above with <code>TestCaseSource</code> attribute to create some consise unit tests.</p>
+<p>Here an example of using <code>TestCaseSource</code> attribute to create unit tests.
+We begin by defining a <code>TestFixture</code> and a helper function <code>approxMatch</code>.
+The function compares two lists of values to see if they are an approximate match
+FsUnit has a great set of built in<a href="https://github.com/fsharp/FsUnit">comparision functions</a>, but for complex list tests
+or tuple comparisions you may need to write your own.</p>
 
 <table class="pre"><tr><td class="lines"><pre class="fssnip">
 <span class="l">1: </span>
@@ -143,9 +147,6 @@ This nicely simulates feeding in a series of events and getting back a series of
 </td>
 </tr>
 </table>
-
-<p>FsUnit has a great set of <a href="https://github.com/fsharp/FsUnit">comparision functions</a> but you may need to write your own depending on what you are testing,
-Here we add an <code>approxMatch</code> function which compares two lists of values to see if they are an approximate match</p>
 
 <p>The sample data for these tests looks like this</p>
 
