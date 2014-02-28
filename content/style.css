@@ -11,11 +11,11 @@ span.s { color:#d4b43c; }
 /* keywords */
 span.k { color:#4e98dc; }
 /* comment */
-span.c { color:#96C71D; }
+span.c { color:#96C71D } /*96C71D
 /* operators */
 span.o { color:#af75c1; }
 /* numbers */
-span.n { color:#96C71D; }
+span.n { color:#AABBCC; }
 /* line number */
 span.l { color:#80b0b0; }
 
