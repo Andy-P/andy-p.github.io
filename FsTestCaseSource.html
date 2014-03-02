@@ -50,7 +50,7 @@ the translator of a number of F# programming books, and the author of the open s
 In case you didn't know, this is also the group that came up with the idea for the <a href="http://tomasp.net/blog/2014/japan-advent-art-en/index.html">F# Advent Calendar</a>.</p>
 
 <p>Since this was my first meeting, I decided to give a 'spur of the moment' lightning talk 
-on my experience using the <code>&lt;TestCaseSource&gt;</code> attribute with FsUnit and Xamarin. 
+on my experience using the <code>[&lt;TestCaseSource&gt;]</code> attribute with FsUnit and Xamarin. 
 I discussed the difficulty of finding examples using F# and how I finally found the
 information I was looking for in a <a href="http://d.hatena.ne.jp/wof_moriguchi/20100831/1283269230">Japanese blog post</a>. There's a lot of code in
 the post so even non-Japanese speakers may find it useful. The rest of the talk focused
@@ -60,8 +60,8 @@ on the advantages of using it for certain cases of TDD.</p>
 
 <ul>
 <li>You have a state</li>
-<li>This state is modified by a some stream of data</li>
-<li>The modification produce some effect that you want to capture</li>
+<li>This state is modified by a some new event or data point</li>
+<li>This event/data point produces some effect that you want to capture</li>
 </ul>
 
 <p>In functional languages this is easy to model:</p>
