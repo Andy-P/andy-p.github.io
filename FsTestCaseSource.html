@@ -289,7 +289,7 @@ to generate the tick. It is one step in reverse engineering the flow of order bo
 <pre><code>    val processTick : orderBook:OrderBook -&gt; tick:Tick -&gt; OrderBook * Order list
 </code></pre>
 
-<p>It takes an <code>OrderBook</code> and <code>Tick</code> and returns a tuple consisting of an 
+<p>It takes an <code>OrderBook</code> and <code>Tick</code> and returns a tuple consisting of an updated
 <code>OrderBook</code> and a list of type <code>Order</code>. Like the example above, 
 we have a state: <code>OrderBook</code>. That state is modified by new piece of data: a <code>Tick</code> event. 
 In turn, that generates some information in the form of a list of type <code>Order</code></p>
