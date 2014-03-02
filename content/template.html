@@ -3,16 +3,14 @@
   <head>
     <meta charset="utf-8">
     <!-- 
-      The Welcome to Minds, Markets and Machines
- parameters will be replaced with the 
+      The {page-title} parameters will be replaced with the 
       document title extracted from the <h1> element or
       file name, if there is no <h1> heading
     -->
-    <title>Welcome to Minds, Markets and Machines
-</title>
+    <title>{page-title}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Minds, Markets, and Machines">
-    <meta name="author" content="Quantix Research">
+    <meta name="description" content="{page-description}">
+    <meta name="author" content="{page-author}">
     <script src="http://code.jquery.com/jquery-1.8.0.js"></script>
     <script src="http://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
     <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
@@ -31,78 +29,21 @@
         <ul class="nav nav-pills pull-right">
           <li><a href="http://twitter.com/QuantixResearch">twitter</a></li>
           <li><a href="http://www.linkedin.com/pub/andre-pemmelaar/7a/43a/a83">LinkedIn</a></li>
-          <li><a href="https://github.com/andy-p">github</a></li>
+          <li><a href="{github-link}">github</a></li>
         </ul>
-        <h3 class="muted">Minds, Markets, and Machines</h3>
+        <h3 class="muted">{project-name}</h3>
       </div>
       <hr />
       <div class="row">
         <div class="span9" id="main">
-          <h1>Welcome to Minds, Markets and Machines</h1>
-
-<p>Wherein, we take a casual stroll through the intersection of <code>machine learning</code>, <code>quantitative analysis</code>, and <code>functional programming</code>. It’s a pretty interesting intersection. Machine learning and general AI are already beginning to rapidly transform the world around us. Functional programming seems to be an ideal programming paradigm to implement these ideas.  I see the next ten years bringing massive advances in the fields of ML, general AI, robotics, etc. Even if I wasn’t using some of this professionally, it would be of great interest to me.</p>
-
-<p>Professionally, I work in the field of what is often called 'alpha discovery'. (just think <code>data science for finance</code>)
-Like data science in general, it encompasses a number of domains:</p>
-
-<ul>
-<li>Math</li>
-<li>Statistical analysis</li>
-<li>Machine learning</li>
-<li>Diverse programming skills</li>
-</ul>
-
-<br>
-
-<p>It goes a bit further. To do it really well you need an understanding of</p>
-
-<ul>
-<li>Behavioral economics</li>
-<li>Market structure (financial domain knowledge)</li>
-<li>Control theory</li>
-<li>Reinforcement learning (a branch of ML)</li>
-</ul>
-
-<h2>Actionable decisions from distant feedback</h2>
-
-<p><a href="http://artint.info/html/ArtInt_262.html">Reinforcement Learning</a> isn't something you hear that much about, but it I think 2014 may see that change somewhat.  Already <a href="http://robotenomics.com/2014/01/27/googles-deepmind-acquisition-in-reinforcement-learning/">Google’s acquisition of Deep Mind</a> has generated some interest. RL is particularly important because it allows one to learn models that produce actionable decisions where the feedback is distant in time from the inputs used to make those decisions. For a fun example, check out “<a href="http://sarvagyavaish.github.io/FlappyBirdRL/">The RL Flappy Bird hack</a>”</p>
-
-<p>The Deep Learning train has been chuggin’ along with fantastic results and has produced <a href="http://www.youtube.com/watch?feature=player_embedded&amp;v=Nu-nlQqFCKg">some amazing advances</a>. The up and coming <a href="http://en.wikipedia.org/wiki/DARPA_Robotics_Challenge">DARPA 2012-2014 challenge</a> to develop semi-autonomous ground robots that can do "complex tasks” will undoubtedly focus more attention on reinforcement learning, and lead to similarly significant advances in the field. Expect to see some amazing results!</p>
-
-<h2>Wait... What's functional programming got to do with it?</h2>
-
-<p>Functional programming is well suited to the task. There is all that great stuff you hear about functional programming.</p>
-
-<ul>
-<li>Clean, concise code leading to fewer bugs and easier maintenance</li>
-<li>Immutability by default, which prevents a large class of errors</li>
-<li>Concurrency - asynchronous programming is very easy, as is parallelism</li>
-<li>Domain modelling is easy and explicit</li>
-</ul>
-
-<br> 
-
-<p>But there is one aspect that is particularly useful when modelling real world event streams...</p>
-
-<h2>Agents, Agents, Agents</h2>
-
-<p>Agents are ideal for modelling multiple concurrent event streams. 
-Scott Wlaschin sums it up nicely in his post on <a href="http://fsharpforfunandprofit.com/posts/concurrency-actor-model/">Messages and agents</a>.</p>
-
-<p>“<strong>It encourages a "pipeline" model of programming with "producers" sending messages to decoupled "consumers"</strong>” <em></em></p>
-
-<p>As an example, a single agent can be created to handle each of the real-time streams of information, and then child agents can be created to handle the various transformations of the data. Finally, a master controlling agent can monitor the data produced to make decisions. The best thing about this is that you can use this same approach for both the simulations used in model building and in real-time systems. Concurrency and scalability can easily be built in.
-(Checkout Yan Cui's <a href="http://www.slideshare.net/theburningmonk/f-in-the-cloud">slides on Slideshare</a> for examples of scalability using AWS and F# in gaming)</p>
-
-<p>That is a brief overview of what I hope to cover here. Hopefully, you will enjoy reading it as much as I enjoy writing about it.</p>
-
-          
+          {document}
+          {tooltips}
 
           <div id="disqus_thread"></div>
           <script type="text/javascript">
               /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
               var disqus_shortname = 'minds-markets-machines'; // required: replace example with your forum shortname
-              var disqus_identifier = '1'; 
+              var disqus_identifier = '{page-commentIssueId}'; 
               /* * * DON'T EDIT BELOW THIS LINE * * */
               (function() {
                   var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -144,7 +85,7 @@ Scott Wlaschin sums it up nicely in his post on <a href="http://fsharpforfunandp
         <div class="span3">
 
           <ul class="nav nav-list" id="menu">
-            <li class="nav-header">Minds, Markets, and Machines</li>
+            <li class="nav-header">{project-name}</li>
             <li class="divider"></li> 
             A stroll through the intersection of machine learning (AI),
             functional programming, and quantitative analysis.
