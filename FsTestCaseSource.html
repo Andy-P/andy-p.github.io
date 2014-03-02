@@ -3,12 +3,12 @@
   <head>
     <meta charset="utf-8">
     <!-- 
-      The Using TestCaseSource with FsUnit in Xamarin
+      The Unit Testing Sequences of Events using TestCaseSource, FsUnit, and Xamarin
  parameters will be replaced with the 
       document title extracted from the <h1> element or
       file name, if there is no <h1> heading
     -->
-    <title>Using TestCaseSource with FsUnit in Xamarin
+    <title>Unit Testing Sequences of Events using TestCaseSource, FsUnit, and Xamarin
 </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="F# Using <TestCaseSoureAttribute> with FsUnit and Xamarin">
@@ -38,40 +38,59 @@
       <hr />
       <div class="row">
         <div class="span9" id="main">
-          <h1>Using TestCaseSource with FsUnit in Xamarin</h1>
+          <h1>Unit Testing Sequences of Events using TestCaseSource, FsUnit, and Xamarin</h1>
 
 <p><img src="assets/FSRoom1.jpg" alt="Alt text" title="Priceless" /></p>
 
-<p>Recently, I attended my first F# meetup here in Japan. Actually, they don't call it a meetup. 
-The term in Japanese is <code>F#談話室</code> which roughly translates to <code>F# conversation room</code>.
-The atmosphere was pretty laid back. Many members seemed to know each other. 
-The group was small compared to some of the other cities’ F# meetups, 
-but it gave the gathering an intimate feeling, The attendees included F# MVPs, 
-the translator of a number of F# programming books,
-and the author of the open source <a href="http://kos59125.github.io/FsRandom/">FSRandom</a> library. 
+<p>In Febuary, I attended my first F# meetup here in Japan. Actually, they don't call it a meetup. 
+The term in Japanese is <code>F#談話室</code> which can be roughly translates as <code>F# lounge</code>.
+As the name suggests, the atmosphere was pretty laid back. Many members seemed to know each other. 
+The group was small which gave the gathering an intimate feeling. The attendees included F# MVPs, 
+the translator of a number of F# programming books, and the author of the open source <a href="http://kos59125.github.io/FsRandom/">FSRandom</a> library. 
 In case you didn't know, this is also the group that came up with the idea for the <a href="http://tomasp.net/blog/2014/japan-advent-art-en/index.html">F# Advent Calendar</a>.</p>
 
-<p>Since this was my first meeting, I decided to give a 'spur of the moment' lightning talk on my experience using the
-<code>&lt;TestCaseSource&gt;</code> attribute with FsUnit. The talk focused on the advantages of using it for certain cases of TDD.</p>
+<p>Since this was my first meeting, I decided to give a 'spur of the moment' lightning talk 
+on my experience using the <code>&lt;TestCaseSource&gt;</code> attribute with FsUnit and Xamarin. 
+I discussed the difficulty of finding examples using F# and how I finally found the
+information I was looking for in a <a href="http://d.hatena.ne.jp/wof_moriguchi/20100831/1283269230">Japanese blog post</a>. There's a lot of code in
+the post so even non-Japanese speakers may find it useful. The rest of the talk focused
+on the advantages of using it for certain cases of TDD.</p>
 
-<p>Specifically, I found this approach useful where you have the following scenario</p>
+<p>Specifically, I have found this approach useful where you have the following scenario</p>
 
 <ul>
 <li>You have a state</li>
 <li>This state is modified by a some stream of data</li>
-<li>The modification produce some effect that you want to captured</li>
+<li>The modification produce some effect that you want to capture</li>
 </ul>
 
-<p>In functional languages we can easily model this by</p>
+<p>In functional languages this is easy to model:</p>
 
 <ul>
-<li>Pass in some state and modifier to a function</li>
-<li>Return the modified state and accumulate a list of modifications</li>
+<li>Pass in some state and modifier (or event) to a function</li>
+<li>Return the modified state and accumulate a list of effects</li>
 </ul>
 
-<p>I find myself using this approach when I want to pipe through a sequence events by recursively iterating
-over a list of data events, while accumulating a list of responses. Below I show how we can use the <code>&lt;TestCaseSource&gt;</code>
-to create unit tests for sequences of events.</p>
+<p>I find myself using this approach when I what to unit test permutations of sequences of events.
+We can do this simply by recursively iterating over a list of data events, 
+while accumulating a list of responses. Below I show how we can combine 
+this with NUnit's <code>&lt;TestCaseSource&gt;</code> attribute tag to create unit tests 
+for sequences of events. Here, I am targeting Mono/.Net 4.5 using Xamarin
+and the following libraries</p>
+
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l">1: </span>
+<span class="l">2: </span>
+<span class="l">3: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="i">System</span>
+<span class="k">open</span> <span class="i">NUnit</span><span class="o">.</span><span class="i">Framework</span>
+<span class="k">open</span> <span class="i">FsUnit</span></pre>
+</td>
+</tr>
+</table>
 
 <h2>A Simple Example</h2>
 
@@ -107,9 +126,8 @@ to create unit tests for sequences of events.</p>
 </tr>
 </table>
 
-<p>The <code>List.scan</code> operation builds a list of results by iterating over a list data points, applying a function,
-and accumulating the results of that functions. This nicely simulates the piping a series of events
-through a function to get a series of results..</p>
+<p>The <code>List.scan</code> operation builds a list of results by iterating over a list of data points, applying a function,
+and accumulating the results of that function. This nicely simulates the piping of a series of events through a function.</p>
 
 <p>The results can easily be parsed using simple list operations.</p>
 
@@ -126,8 +144,8 @@ through a function to get a series of results..</p>
 <td class="snippet"><pre class="fssnip">
     <span class="c">// drop the head pair used for initialization, and then split into state and change lists</span>
     <span class="k">let</span> <span onmouseout="hideTip(event, 'fs10', 21)" onmouseover="showTip(event, 'fs10', 21)" class="i">justTheStates</span>, <span onmouseout="hideTip(event, 'fs11', 22)" onmouseover="showTip(event, 'fs11', 22)" class="i">justTheEffects</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs7', 23)" onmouseover="showTip(event, 'fs7', 23)" class="i">rs</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs8', 24)" onmouseover="showTip(event, 'fs8', 24)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs12', 25)" onmouseover="showTip(event, 'fs12', 25)" class="i">tail</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs8', 26)" onmouseover="showTip(event, 'fs8', 26)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs13', 27)" onmouseover="showTip(event, 'fs13', 27)" class="i">unzip</span>   
-    <span class="c">// justTheEffect : float list = [0.97; 0.9506; 0.979118; 0.999679478]</span>
-    <span class="c">// justTheChanges : float list = [-0.03; -0.0194; 0.028518; 0.020561478]</span>
+    <span class="c">// justTheStates : float list = [0.97; 0.9506; 0.979118; 0.999679478]</span>
+    <span class="c">// justTheEffects : float list = [-0.03; -0.0194; 0.028518; 0.020561478]</span>
         
     <span class="k">let</span> <span onmouseout="hideTip(event, 'fs14', 28)" onmouseover="showTip(event, 'fs14', 28)" class="i">finalState</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs10', 29)" onmouseover="showTip(event, 'fs10', 29)" class="i">justTheStates</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs8', 30)" onmouseover="showTip(event, 'fs8', 30)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs15', 31)" onmouseover="showTip(event, 'fs15', 31)" class="i">reduce</span> (<span class="k">fun</span> _ <span onmouseout="hideTip(event, 'fs16', 32)" onmouseover="showTip(event, 'fs16', 32)" class="i">n</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs16', 33)" onmouseover="showTip(event, 'fs16', 33)" class="i">n</span>)
     <span class="c">// val finalState : float = 0.999679478 </span></pre>
@@ -137,41 +155,20 @@ through a function to get a series of results..</p>
 
 <br>
 
-<p>Here's as example of using the <code>TestCaseSource</code> attribute to create unit tests for the above.
-We begin by defining a <code>TestFixture</code> and a helper function <code>approxMatch</code>.
-This function compares two lists of values to see if they are an approximate match. 
-FsUnit already has a great set of <a href="https://github.com/fsharp/FsUnit">built-in comparision functions</a>, but for complex list tests,
-or tuple comparisions you may need to write your own.</p>
+<p>Here's an example of using the <code>[&lt;TestCaseSource&gt;]</code> attribute to create unit tests for the above.
+We begin by defining a <code>TestFixture</code> and some sample data.</p>
 
 <table class="pre"><tr><td class="lines"><pre class="fssnip">
 <span class="l">1: </span>
 <span class="l">2: </span>
-<span class="l">3: </span>
-<span class="l">4: </span>
-<span class="l">5: </span>
 </pre>
 </td>
 <td class="snippet"><pre class="fssnip">
 [&lt;<span class="i">TestFixture</span>&gt;]
-<span class="k">type</span> <span class="i">``A Sample Test``</span> () <span class="o">=</span> 
-
-    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs17', 34)" onmouseover="showTip(event, 'fs17', 34)" class="i">approxEqual</span> <span onmouseout="hideTip(event, 'fs18', 35)" onmouseover="showTip(event, 'fs18', 35)" class="i">ls1</span> <span onmouseout="hideTip(event, 'fs19', 36)" onmouseover="showTip(event, 'fs19', 36)" class="i">ls2</span> <span onmouseout="hideTip(event, 'fs20', 37)" onmouseover="showTip(event, 'fs20', 37)" class="i">e</span> <span class="o">=</span>
-       <span onmouseout="hideTip(event, 'fs8', 38)" onmouseover="showTip(event, 'fs8', 38)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs21', 39)" onmouseover="showTip(event, 'fs21', 39)" class="i">forall2</span> (<span class="k">fun</span> (<span onmouseout="hideTip(event, 'fs22', 40)" onmouseover="showTip(event, 'fs22', 40)" class="i">x1</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs23', 41)" onmouseover="showTip(event, 'fs23', 41)" class="i">float</span>) (<span onmouseout="hideTip(event, 'fs24', 42)" onmouseover="showTip(event, 'fs24', 42)" class="i">x2</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs23', 43)" onmouseover="showTip(event, 'fs23', 43)" class="i">float</span>) <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs25', 44)" onmouseover="showTip(event, 'fs25', 44)" class="i">Math</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs26', 45)" onmouseover="showTip(event, 'fs26', 45)" class="i">Abs</span>(<span onmouseout="hideTip(event, 'fs22', 46)" onmouseover="showTip(event, 'fs22', 46)" class="i">x1</span> <span class="o">-</span> <span onmouseout="hideTip(event, 'fs24', 47)" onmouseover="showTip(event, 'fs24', 47)" class="i">x2</span>) <span class="o">&lt;=</span> <span onmouseout="hideTip(event, 'fs20', 48)" onmouseover="showTip(event, 'fs20', 48)" class="i">e</span>) <span onmouseout="hideTip(event, 'fs18', 49)" onmouseover="showTip(event, 'fs18', 49)" class="i">ls1</span> <span onmouseout="hideTip(event, 'fs19', 50)" onmouseover="showTip(event, 'fs19', 50)" class="i">ls2</span> </pre>
+<span class="k">type</span> <span class="i">``A Sample Test``</span> () <span class="o">=</span> </pre>
 </td>
 </tr>
 </table>
-
-<p>There are a few important things to note about the sample data.</p>
-
-<ol>
-<li>NUnit expects it in the form of a <code>static member</code></li>
-<li>It is defined as an array of arrays i.e. <code>[ ][ ]</code></li>
-<li>You can put almost any object inside the inner nested array.</li>
-<li>The contents of each of the cells inthe  inner array will be passed one by one to your unit test</li>
-</ol>
-
-<p>In this case, I uses a two element tuple (list * list) as a simple way to keep
-the function inputs and outputs clear</p>
 
 <table class="pre"><tr><td class="lines"><pre class="fssnip">
 <span class="l">1: </span>
@@ -193,8 +190,37 @@ the function inputs and outputs clear</p>
 </tr>
 </table>
 
-<p>Below are two tests. The first is an example of using one of FsUnit's built in tests <code>should haveLength</code>.
-The second uses the my custom <code>approxMatch</code> function to test if the two list share approximately the same values.</p>
+<p>There are a few important things to note about creating unit cases using <code>[&lt;TestCaseSource&gt;]</code>.</p>
+
+<ol>
+<li>NUnit expects it in the form of a <code>static member</code></li>
+<li>It is defined as an array of arrays.   i.e. <code>[ ][ ]</code></li>
+<li>You can put almost any object inside the inner nested array.</li>
+<li>The contents of each of the cells in the inner array will be passed one by one to your unit test</li>
+</ol>
+
+<p>In this example, I use a two element tuple (list * list) as a simple way of keeping the system under
+test's inputs and outputs clear</p>
+
+<h2>Unit tests for our simple example</h2>
+
+<p>Below is a custom comparision function and two unit tests. FsUnit already has a great set of 
+<a href="https://github.com/fsharp/FsUnit">built-in comparison functions</a>, but for some list tests, or tuple comparisons you may
+need to write your own. The first is an example of using one of FsUnit's built in tests 
+<code>should haveLength</code>. The second uses the <code>approxEqual</code> function to test if each of the 
+pairs in the lists have approximately the same value.</p>
+
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l">1: </span>
+<span class="l">2: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs17', 34)" onmouseover="showTip(event, 'fs17', 34)" class="i">approxEqual</span> <span onmouseout="hideTip(event, 'fs18', 35)" onmouseover="showTip(event, 'fs18', 35)" class="i">ls1</span> <span onmouseout="hideTip(event, 'fs19', 36)" onmouseover="showTip(event, 'fs19', 36)" class="i">ls2</span> <span onmouseout="hideTip(event, 'fs20', 37)" onmouseover="showTip(event, 'fs20', 37)" class="i">e</span> <span class="o">=</span>
+       <span onmouseout="hideTip(event, 'fs8', 38)" onmouseover="showTip(event, 'fs8', 38)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs21', 39)" onmouseover="showTip(event, 'fs21', 39)" class="i">forall2</span> (<span class="k">fun</span> (<span onmouseout="hideTip(event, 'fs22', 40)" onmouseover="showTip(event, 'fs22', 40)" class="i">x1</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs23', 41)" onmouseover="showTip(event, 'fs23', 41)" class="i">float</span>) (<span onmouseout="hideTip(event, 'fs24', 42)" onmouseover="showTip(event, 'fs24', 42)" class="i">x2</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs23', 43)" onmouseover="showTip(event, 'fs23', 43)" class="i">float</span>) <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs25', 44)" onmouseover="showTip(event, 'fs25', 44)" class="i">Math</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs26', 45)" onmouseover="showTip(event, 'fs26', 45)" class="i">Abs</span>(<span onmouseout="hideTip(event, 'fs22', 46)" onmouseover="showTip(event, 'fs22', 46)" class="i">x1</span> <span class="o">-</span> <span onmouseout="hideTip(event, 'fs24', 47)" onmouseover="showTip(event, 'fs24', 47)" class="i">x2</span>) <span class="o">&lt;=</span> <span onmouseout="hideTip(event, 'fs20', 48)" onmouseover="showTip(event, 'fs20', 48)" class="i">e</span>) <span onmouseout="hideTip(event, 'fs18', 49)" onmouseover="showTip(event, 'fs18', 49)" class="i">ls1</span> <span onmouseout="hideTip(event, 'fs19', 50)" onmouseover="showTip(event, 'fs19', 50)" class="i">ls2</span> </pre>
+</td>
+</tr>
+</table>
 
 <table class="pre"><tr><td class="lines"><pre class="fssnip">
 <span class="l"> 1: </span>
@@ -238,15 +264,15 @@ The second uses the my custom <code>approxMatch</code> function to test if the t
 </tr>
 </table>
 
-<p>Note, the F# will frequently not have enough information to infer the type of data being supplied to
-the unit tests. You will need specify it as above: <code>(testData: float list * float list)</code></p>
+<p>Note, F# may not have enough information to infer the type of data being supplied to
+the unit tests. You may need to specify it as I have above: <code>(testData: float list * float list)</code></p>
 
 <h2>A Real-World Example</h2>
 
-<p>Here is a real-world example. The system under test is a functional called <code>processTick</code>.
+<p>Here is a real-world example. The system under test is a function called <code>processTick</code>.
 This function is part of a larger <code>Order Inference</code> algorithm designed to process financial data. 
 Specifically, this function determines what changes in buy and sell sizes took placed 
-to generate the tick. It is one step in reversing engineering the flow of order book information.</p>
+to generate the tick. It is one step in reverse engineering the flow of order book information.</p>
 
 <table class="pre"><tr><td class="lines"><pre class="fssnip">
 <span class="l">1: </span>
@@ -264,14 +290,14 @@ to generate the tick. It is one step in reversing engineering the flow of order 
 </code></pre>
 
 <p>It takes an <code>OrderBook</code> and <code>Tick</code> and returns a tuple consisting of an 
-<code>OrderBook</code> and a list of type <code>Order</code>. This is the same pattern as above.
-We have a state: <code>OrderBook</code>. That state is modified by an event: <code>Tick</code>. And that
-generates some information in the form of a list of type <code>Order</code></p>
+<code>OrderBook</code> and a list of type <code>Order</code>. Like the example above, 
+we have a state: <code>OrderBook</code>. That state is modified by new piece of data: a <code>Tick</code> event. 
+In turn, that generates some information in the form of a list of type <code>Order</code></p>
 
 <p>A <code>Tick</code> usually consists of one of two types; <code>Quote</code> or <code>Trade</code>. 
 Here, we use a record to model each of them. A <code>Quote</code> can either be on the <code>Bid</code> side or <code>Ask</code> side. 
 So a <code>Tick</code> is either a <code>Bid quote</code>, an <code>Ask quote</code>, or a <code>Trade</code> (trades have no side). 
-The overall strucuture is succinctly expressed as a discriminate union.</p>
+The overall structure is succinctly expressed as a discriminate union.</p>
 
 <table class="pre"><tr><td class="lines"><pre class="fssnip">
 <span class="l">1: </span>
@@ -286,7 +312,7 @@ The overall strucuture is succinctly expressed as a discriminate union.</p>
 </pre>
 </td>
 <td class="snippet"><pre class="fssnip">
-<span class="k">module</span> <span class="i">OrderInference</span> <span class="o">=</span> 
+<span class="k">module</span> <span class="i">OrdInfer</span> <span class="o">=</span> 
 
     <span class="k">type</span> <span onmouseout="hideTip(event, 'fs41', 108)" onmouseover="showTip(event, 'fs41', 108)" class="i">Trade</span> <span class="o">=</span> { <span onmouseout="hideTip(event, 'fs42', 109)" onmouseover="showTip(event, 'fs42', 109)" class="i">time</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs43', 110)" onmouseover="showTip(event, 'fs43', 110)" class="i">DateTime</span>; <span onmouseout="hideTip(event, 'fs44', 111)" onmouseover="showTip(event, 'fs44', 111)" class="i">price</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs23', 112)" onmouseover="showTip(event, 'fs23', 112)" class="i">float</span>; <span onmouseout="hideTip(event, 'fs45', 113)" onmouseover="showTip(event, 'fs45', 113)" class="i">size</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs46', 114)" onmouseover="showTip(event, 'fs46', 114)" class="i">int</span>; }
     <span class="k">type</span> <span onmouseout="hideTip(event, 'fs47', 115)" onmouseover="showTip(event, 'fs47', 115)" class="i">Quote</span> <span class="o">=</span> { <span onmouseout="hideTip(event, 'fs48', 116)" onmouseover="showTip(event, 'fs48', 116)" class="i">time</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs43', 117)" onmouseover="showTip(event, 'fs43', 117)" class="i">DateTime</span>; <span onmouseout="hideTip(event, 'fs49', 118)" onmouseover="showTip(event, 'fs49', 118)" class="i">price</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs23', 119)" onmouseover="showTip(event, 'fs23', 119)" class="i">float</span>; <span onmouseout="hideTip(event, 'fs50', 120)" onmouseover="showTip(event, 'fs50', 120)" class="i">size</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs46', 121)" onmouseover="showTip(event, 'fs46', 121)" class="i">int</span>; <span onmouseout="hideTip(event, 'fs51', 122)" onmouseover="showTip(event, 'fs51', 122)" class="i">depth</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs46', 123)" onmouseover="showTip(event, 'fs46', 123)" class="i">int</span> }
@@ -299,9 +325,9 @@ The overall strucuture is succinctly expressed as a discriminate union.</p>
 </tr>
 </table>
 
-<p>The <code>OrderBook</code> is the current state of the market.
+<p>As noted above, the <code>OrderBook</code> holds the current state of the market.
 It includes the current best <code>Market</code> as well as a Map of <code>PriceNode</code> keyed to prices. 
-It is defined as follows.</p>
+It is defined as follows:</p>
 
 <table class="pre"><tr><td class="lines"><pre class="fssnip">
 <span class="l">1: </span>
@@ -313,7 +339,7 @@ It is defined as follows.</p>
 </tr>
 </table>
 
-<p>The <code>processTick</code> function returns an updated <code>OrderBook</code> and a List of type <code>Order</code>:</p>
+<p>The <code>processTick</code> function returns an updated <code>OrderBook</code> and a List of type <code>Order</code> that is defined as follows:</p>
 
 <table class="pre"><tr><td class="lines"><pre class="fssnip">
 <span class="l">1: </span>
@@ -331,19 +357,186 @@ It is defined as follows.</p>
 </tr>
 </table>
 
-<h2>Unit testing multiple permutations of a sequences of events</h2>
+<h2>Unit testing multiple permutations of a sequence of events</h2>
 
-<p>Below I have include three types of test cases. The first tow a fialy straight forward.
-The third case is where I find combining <code>TestCaseSource</code> and list comparisions so effective.</p>
+<p>Below, I have include three types of test cases. The first two cases are fairly straight forward.
+Using TDD, we can begin with these simple cases, and then build our code up to handle
+the extreme edge cases. Because the unit tests rely on list comparison, any arbitrary length 
+of events can be tested using the same set of unit tests. That is, once the initial test harness
+and comparison functions have been written we can make our tests as complex as necessary.</p>
 
-<p>In case 3, we feed in three event; A <code>Trade</code>, then <code>Bid</code> update and an <code>Ask</code> update. 
-The order here matters. The algorithm needs to be designed to handle the various permutation.
-Lists used inside <code>TestCaseSource</code> allow us to easily create and test various sequence
-to see how our algorithm will perform.</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+<span class="l">12: </span>
+<span class="l">13: </span>
+<span class="l">14: </span>
+<span class="l">15: </span>
+<span class="l">16: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+<span class="k">type</span> <span class="i">``processTick() Tests for a Bid quote``</span> () <span class="o">=</span> 
 
-<p>Furthermore, using TDD we can begin with simple cases, as in case 1, and then build towards
-the exteme edge case. Because the unit test rely on list comparision, any arbitray length of events
-can be tested uses the same set of unit tests.</p>
+    <span class="c">// market setup included for reference</span>
+    <span class="c">// tckSz,  bid2,    bidSz2,  bid1,    bidSz1, last,   lsSz,  ask1,    askSz1,  ask2,     askSz2</span>
+    <span class="c">// 10.,    15040.,  100,     15050.,  100,    15060., 0,     15070.,  100,     15080.,   100</span>
+
+    <span class="k">static</span> <span class="k">member</span> <span onmouseout="hideTip(event, 'fs123', 292)" onmouseover="showTip(event, 'fs123', 292)" class="i">TestCases</span> <span class="o">=</span> 
+        [|
+            <span class="c">// Case 1: single event -&gt; single effect</span>
+            [| [(<span onmouseout="hideTip(event, 'fs1', 293)" onmouseover="showTip(event, 'fs1', 293)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs43', 294)" onmouseover="showTip(event, 'fs43', 294)" class="i">DateTime</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs124', 295)" onmouseover="showTip(event, 'fs124', 295)" class="i">MinValue</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs125', 296)" onmouseover="showTip(event, 'fs125', 296)" class="i">AddTicks</span>(<span onmouseout="hideTip(event, 'fs126', 297)" onmouseover="showTip(event, 'fs126', 297)" class="i">int64</span> <span class="n">2</span>), <span class="s">&quot;</span><span class="s">Bid</span><span class="s">&quot;</span>,<span class="n">15050.</span>, <span class="n">50</span>,<span class="n">1</span>);], <span class="c">// best bid decreases</span>
+               ([ (<span onmouseout="hideTip(event, 'fs1', 298)" onmouseover="showTip(event, 'fs1', 298)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs43', 299)" onmouseover="showTip(event, 'fs43', 299)" class="i">DateTime</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs124', 300)" onmouseover="showTip(event, 'fs124', 300)" class="i">MinValue</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs125', 301)" onmouseover="showTip(event, 'fs125', 301)" class="i">AddTicks</span>(<span onmouseout="hideTip(event, 'fs126', 302)" onmouseover="showTip(event, 'fs126', 302)" class="i">int64</span> <span class="n">2</span>), <span class="n">15050.</span>,   <span class="n">0</span>,  <span class="n">0</span>, <span class="o">-</span><span class="n">50</span>,   <span class="n">0</span>, <span class="n">1</span>, <span class="n">0</span>);]) |]; 
+
+            <span class="c">// Case 2: single event -&gt; multiple effects</span>
+            [| [  (<span onmouseout="hideTip(event, 'fs1', 303)" onmouseover="showTip(event, 'fs1', 303)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs43', 304)" onmouseover="showTip(event, 'fs43', 304)" class="i">DateTime</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs124', 305)" onmouseover="showTip(event, 'fs124', 305)" class="i">MinValue</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs125', 306)" onmouseover="showTip(event, 'fs125', 306)" class="i">AddTicks</span>(<span onmouseout="hideTip(event, 'fs126', 307)" onmouseover="showTip(event, 'fs126', 307)" class="i">int64</span> <span class="n">2</span>), <span class="s">&quot;</span><span class="s">Bid</span><span class="s">&quot;</span>,<span class="n">15040.</span>, <span class="n">50</span>,<span class="n">1</span>);], <span class="c">// best bid ticks down and decreases</span>
+               ([ (<span onmouseout="hideTip(event, 'fs1', 308)" onmouseover="showTip(event, 'fs1', 308)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs43', 309)" onmouseover="showTip(event, 'fs43', 309)" class="i">DateTime</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs124', 310)" onmouseover="showTip(event, 'fs124', 310)" class="i">MinValue</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs125', 311)" onmouseover="showTip(event, 'fs125', 311)" class="i">AddTicks</span>(<span onmouseout="hideTip(event, 'fs126', 312)" onmouseover="showTip(event, 'fs126', 312)" class="i">int64</span> <span class="n">2</span>), <span class="n">15050.</span>,   <span class="n">0</span>,  <span class="n">0</span>,<span class="o">-</span><span class="n">100</span>,   <span class="n">0</span>, <span class="n">1</span>, <span class="n">0</span>);
+                  (<span onmouseout="hideTip(event, 'fs1', 313)" onmouseover="showTip(event, 'fs1', 313)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs43', 314)" onmouseover="showTip(event, 'fs43', 314)" class="i">DateTime</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs124', 315)" onmouseover="showTip(event, 'fs124', 315)" class="i">MinValue</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs125', 316)" onmouseover="showTip(event, 'fs125', 316)" class="i">AddTicks</span>(<span onmouseout="hideTip(event, 'fs126', 317)" onmouseover="showTip(event, 'fs126', 317)" class="i">int64</span> <span class="n">2</span>), <span class="n">15040.</span>,   <span class="n">0</span>,  <span class="n">0</span>, <span class="o">-</span><span class="n">50</span>,   <span class="n">0</span>, <span class="n">1</span>, <span class="n">0</span>);]) |]; </pre>
+</td>
+</tr>
+</table>
+
+<p>The third case is where I find combining <code>[&lt;TestCaseSource&gt;]</code> and list comparisons become very useful. 
+Here we simulate a large trade causing the Ask to become the Bid. We feed in three events;
+a <code>Trade</code>, then a <code>Bid</code> update and an <code>Ask</code> update.</p>
+
+<p>The order here matters. The algorithm needs to be designed to handle the various permutations. In real-time 
+these 3 events could arrive in one of 6 different ways. For more complex sequences, the permutations become too large
+to test every case, but you still can use this approach to test a representative sample of the edge cases.</p>
+
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+             <span class="c">// Case 3: multiple events -&gt; multiple effects (Ask becomes Bid)</span>
+            [| [(<span onmouseout="hideTip(event, 'fs1', 318)" onmouseover="showTip(event, 'fs1', 318)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs43', 319)" onmouseover="showTip(event, 'fs43', 319)" class="i">DateTime</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs124', 320)" onmouseover="showTip(event, 'fs124', 320)" class="i">MinValue</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs125', 321)" onmouseover="showTip(event, 'fs125', 321)" class="i">AddTicks</span>(<span onmouseout="hideTip(event, 'fs126', 322)" onmouseover="showTip(event, 'fs126', 322)" class="i">int64</span> <span class="n">2</span>), <span class="s">&quot;</span><span class="s">Trade</span><span class="s">&quot;</span>, <span class="n">15070.</span>, <span class="n">110</span>, <span class="n">1</span>);
+                (<span onmouseout="hideTip(event, 'fs1', 323)" onmouseover="showTip(event, 'fs1', 323)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs43', 324)" onmouseover="showTip(event, 'fs43', 324)" class="i">DateTime</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs124', 325)" onmouseover="showTip(event, 'fs124', 325)" class="i">MinValue</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs125', 326)" onmouseover="showTip(event, 'fs125', 326)" class="i">AddTicks</span>(<span onmouseout="hideTip(event, 'fs126', 327)" onmouseover="showTip(event, 'fs126', 327)" class="i">int64</span> <span class="n">3</span>), <span class="s">&quot;</span><span class="s">Bid</span><span class="s">&quot;</span>  , <span class="n">15070.</span>,  <span class="n">10</span>, <span class="n">1</span>);
+                (<span onmouseout="hideTip(event, 'fs1', 328)" onmouseover="showTip(event, 'fs1', 328)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs43', 329)" onmouseover="showTip(event, 'fs43', 329)" class="i">DateTime</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs124', 330)" onmouseover="showTip(event, 'fs124', 330)" class="i">MinValue</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs125', 331)" onmouseover="showTip(event, 'fs125', 331)" class="i">AddTicks</span>(<span onmouseout="hideTip(event, 'fs126', 332)" onmouseover="showTip(event, 'fs126', 332)" class="i">int64</span> <span class="n">4</span>), <span class="s">&quot;</span><span class="s">Ask</span><span class="s">&quot;</span>  , <span class="n">15080.</span>, <span class="n">120</span>, <span class="n">1</span>);], 
+
+               <span class="c">// my expected response     </span>
+               ([(<span onmouseout="hideTip(event, 'fs1', 333)" onmouseover="showTip(event, 'fs1', 333)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs43', 334)" onmouseover="showTip(event, 'fs43', 334)" class="i">DateTime</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs124', 335)" onmouseover="showTip(event, 'fs124', 335)" class="i">MinValue</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs125', 336)" onmouseover="showTip(event, 'fs125', 336)" class="i">AddTicks</span>(<span onmouseout="hideTip(event, 'fs126', 337)" onmouseover="showTip(event, 'fs126', 337)" class="i">int64</span> <span class="n">2</span>), <span class="n">15070.0</span>, <span class="n">110</span>, <span class="n">10</span>,   <span class="n">0</span>,    <span class="n">0</span>, <span class="n">0</span>, <span class="n">0</span>);
+                 (<span onmouseout="hideTip(event, 'fs1', 338)" onmouseover="showTip(event, 'fs1', 338)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs43', 339)" onmouseover="showTip(event, 'fs43', 339)" class="i">DateTime</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs124', 340)" onmouseover="showTip(event, 'fs124', 340)" class="i">MinValue</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs125', 341)" onmouseover="showTip(event, 'fs125', 341)" class="i">AddTicks</span>(<span onmouseout="hideTip(event, 'fs126', 342)" onmouseover="showTip(event, 'fs126', 342)" class="i">int64</span> <span class="n">3</span>), <span class="n">15070.0</span>,  <span class="n">10</span>,  <span class="n">0</span>,   <span class="n">0</span>, <span class="o">-</span><span class="n">100</span>, <span class="n">1</span>, <span class="n">0</span>);
+                 (<span onmouseout="hideTip(event, 'fs1', 343)" onmouseover="showTip(event, 'fs1', 343)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs43', 344)" onmouseover="showTip(event, 'fs43', 344)" class="i">DateTime</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs124', 345)" onmouseover="showTip(event, 'fs124', 345)" class="i">MinValue</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs125', 346)" onmouseover="showTip(event, 'fs125', 346)" class="i">AddTicks</span>(<span onmouseout="hideTip(event, 'fs126', 347)" onmouseover="showTip(event, 'fs126', 347)" class="i">int64</span> <span class="n">4</span>), <span class="n">15070.0</span>,   <span class="n">0</span>,  <span class="n">0</span>,   <span class="n">0</span>,    <span class="n">0</span>, <span class="n">0</span>, <span class="n">1</span>);
+                 (<span onmouseout="hideTip(event, 'fs1', 348)" onmouseover="showTip(event, 'fs1', 348)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs43', 349)" onmouseover="showTip(event, 'fs43', 349)" class="i">DateTime</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs124', 350)" onmouseover="showTip(event, 'fs124', 350)" class="i">MinValue</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs125', 351)" onmouseover="showTip(event, 'fs125', 351)" class="i">AddTicks</span>(<span onmouseout="hideTip(event, 'fs126', 352)" onmouseover="showTip(event, 'fs126', 352)" class="i">int64</span> <span class="n">4</span>), <span class="n">15080.0</span>,   <span class="n">0</span>, <span class="n">20</span>,   <span class="n">0</span>,    <span class="n">0</span>, <span class="n">0</span>, <span class="n">1</span>);]) |];
+        |]</pre>
+</td>
+</tr>
+</table>
+
+<h2>Comparison using a few helper functions</h2>
+
+<p>We'll need to write some helper function to do the actual comparisons. 
+But, first we'll write two functions to transform our <code>[&lt;TestCaseSource&gt;]</code> unit test data 
+into a list of type <code>Tick</code> (our events) and a list of type <code>Order</code> (our expected results)</p>
+
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+<span class="l">12: </span>
+<span class="l">13: </span>
+<span class="l">14: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs75', 160)" onmouseover="showTip(event, 'fs75', 160)" class="i">getTick</span> <span onmouseout="hideTip(event, 'fs76', 161)" onmouseover="showTip(event, 'fs76', 161)" class="i">time</span> <span onmouseout="hideTip(event, 'fs77', 162)" onmouseover="showTip(event, 'fs77', 162)" class="i">tickType</span> <span onmouseout="hideTip(event, 'fs78', 163)" onmouseover="showTip(event, 'fs78', 163)" class="i">price</span> <span onmouseout="hideTip(event, 'fs79', 164)" onmouseover="showTip(event, 'fs79', 164)" class="i">size</span> <span onmouseout="hideTip(event, 'fs80', 165)" onmouseover="showTip(event, 'fs80', 165)" class="i">depth</span> <span class="o">=</span>
+        <span class="k">match</span> <span onmouseout="hideTip(event, 'fs77', 166)" onmouseover="showTip(event, 'fs77', 166)" class="i">tickType</span> <span class="k">with</span>
+        | <span class="s">&quot;</span><span class="s">Bid</span><span class="s">&quot;</span>   <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs81', 167)" onmouseover="showTip(event, 'fs81', 167)" class="i">OrdInfer</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs82', 168)" onmouseover="showTip(event, 'fs82', 168)" class="i">Bid</span>   {<span onmouseout="hideTip(event, 'fs81', 169)" onmouseover="showTip(event, 'fs81', 169)" class="i">OrdInfer</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs83', 170)" onmouseover="showTip(event, 'fs83', 170)" class="i">dfltQuote</span> <span class="k">with</span> <span onmouseout="hideTip(event, 'fs76', 171)" onmouseover="showTip(event, 'fs76', 171)" class="i">time</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs76', 172)" onmouseover="showTip(event, 'fs76', 172)" class="i">time</span>; <span onmouseout="hideTip(event, 'fs78', 173)" onmouseover="showTip(event, 'fs78', 173)" class="i">price</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs78', 174)" onmouseover="showTip(event, 'fs78', 174)" class="i">price</span>; <span onmouseout="hideTip(event, 'fs79', 175)" onmouseover="showTip(event, 'fs79', 175)" class="i">size</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs79', 176)" onmouseover="showTip(event, 'fs79', 176)" class="i">size</span>; <span onmouseout="hideTip(event, 'fs80', 177)" onmouseover="showTip(event, 'fs80', 177)" class="i">depth</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs80', 178)" onmouseover="showTip(event, 'fs80', 178)" class="i">depth</span>}
+        | <span class="s">&quot;</span><span class="s">Ask</span><span class="s">&quot;</span>   <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs81', 179)" onmouseover="showTip(event, 'fs81', 179)" class="i">OrdInfer</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs84', 180)" onmouseover="showTip(event, 'fs84', 180)" class="i">Ask</span>   {<span onmouseout="hideTip(event, 'fs81', 181)" onmouseover="showTip(event, 'fs81', 181)" class="i">OrdInfer</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs83', 182)" onmouseover="showTip(event, 'fs83', 182)" class="i">dfltQuote</span> <span class="k">with</span> <span onmouseout="hideTip(event, 'fs76', 183)" onmouseover="showTip(event, 'fs76', 183)" class="i">time</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs76', 184)" onmouseover="showTip(event, 'fs76', 184)" class="i">time</span>; <span onmouseout="hideTip(event, 'fs78', 185)" onmouseover="showTip(event, 'fs78', 185)" class="i">price</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs78', 186)" onmouseover="showTip(event, 'fs78', 186)" class="i">price</span>; <span onmouseout="hideTip(event, 'fs79', 187)" onmouseover="showTip(event, 'fs79', 187)" class="i">size</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs79', 188)" onmouseover="showTip(event, 'fs79', 188)" class="i">size</span>; <span onmouseout="hideTip(event, 'fs80', 189)" onmouseover="showTip(event, 'fs80', 189)" class="i">depth</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs80', 190)" onmouseover="showTip(event, 'fs80', 190)" class="i">depth</span>}
+        | <span class="s">&quot;</span><span class="s">Trade</span><span class="s">&quot;</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs81', 191)" onmouseover="showTip(event, 'fs81', 191)" class="i">OrdInfer</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs85', 192)" onmouseover="showTip(event, 'fs85', 192)" class="i">Trade</span> {<span onmouseout="hideTip(event, 'fs81', 193)" onmouseover="showTip(event, 'fs81', 193)" class="i">OrdInfer</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs86', 194)" onmouseover="showTip(event, 'fs86', 194)" class="i">dfltTrade</span> <span class="k">with</span> <span onmouseout="hideTip(event, 'fs76', 195)" onmouseover="showTip(event, 'fs76', 195)" class="i">time</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs76', 196)" onmouseover="showTip(event, 'fs76', 196)" class="i">time</span>; <span onmouseout="hideTip(event, 'fs78', 197)" onmouseover="showTip(event, 'fs78', 197)" class="i">price</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs78', 198)" onmouseover="showTip(event, 'fs78', 198)" class="i">price</span>; <span onmouseout="hideTip(event, 'fs79', 199)" onmouseover="showTip(event, 'fs79', 199)" class="i">size</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs79', 200)" onmouseover="showTip(event, 'fs79', 200)" class="i">size</span>}
+        | _       <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs81', 201)" onmouseover="showTip(event, 'fs81', 201)" class="i">OrdInfer</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs85', 202)" onmouseover="showTip(event, 'fs85', 202)" class="i">Trade</span> {<span onmouseout="hideTip(event, 'fs81', 203)" onmouseover="showTip(event, 'fs81', 203)" class="i">OrdInfer</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs86', 204)" onmouseover="showTip(event, 'fs86', 204)" class="i">dfltTrade</span> <span class="k">with</span> <span onmouseout="hideTip(event, 'fs76', 205)" onmouseover="showTip(event, 'fs76', 205)" class="i">time</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs76', 206)" onmouseover="showTip(event, 'fs76', 206)" class="i">time</span>; <span onmouseout="hideTip(event, 'fs78', 207)" onmouseover="showTip(event, 'fs78', 207)" class="i">price</span> <span class="o">=</span> <span class="n">0.</span>;<span onmouseout="hideTip(event, 'fs79', 208)" onmouseover="showTip(event, 'fs79', 208)" class="i">size</span> <span class="o">=</span> <span class="n">0</span>}
+
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs87', 209)" onmouseover="showTip(event, 'fs87', 209)" class="i">tupleToTicks</span> <span onmouseout="hideTip(event, 'fs88', 210)" onmouseover="showTip(event, 'fs88', 210)" class="i">ls</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs8', 211)" onmouseover="showTip(event, 'fs8', 211)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs89', 212)" onmouseover="showTip(event, 'fs89', 212)" class="i">map</span>(<span class="k">fun</span> (<span onmouseout="hideTip(event, 'fs90', 213)" onmouseover="showTip(event, 'fs90', 213)" class="i">tm</span>, <span onmouseout="hideTip(event, 'fs91', 214)" onmouseover="showTip(event, 'fs91', 214)" class="i">t</span>, <span onmouseout="hideTip(event, 'fs92', 215)" onmouseover="showTip(event, 'fs92', 215)" class="i">p</span>, <span onmouseout="hideTip(event, 'fs93', 216)" onmouseover="showTip(event, 'fs93', 216)" class="i">s</span>, <span onmouseout="hideTip(event, 'fs94', 217)" onmouseover="showTip(event, 'fs94', 217)" class="i">d</span>) <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs75', 218)" onmouseover="showTip(event, 'fs75', 218)" class="i">getTick</span> <span onmouseout="hideTip(event, 'fs90', 219)" onmouseover="showTip(event, 'fs90', 219)" class="i">tm</span> <span onmouseout="hideTip(event, 'fs91', 220)" onmouseover="showTip(event, 'fs91', 220)" class="i">t</span> <span onmouseout="hideTip(event, 'fs92', 221)" onmouseover="showTip(event, 'fs92', 221)" class="i">p</span> <span onmouseout="hideTip(event, 'fs93', 222)" onmouseover="showTip(event, 'fs93', 222)" class="i">s</span> <span onmouseout="hideTip(event, 'fs94', 223)" onmouseover="showTip(event, 'fs94', 223)" class="i">d</span>) <span onmouseout="hideTip(event, 'fs88', 224)" onmouseover="showTip(event, 'fs88', 224)" class="i">ls</span>
+
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs95', 225)" onmouseover="showTip(event, 'fs95', 225)" class="i">tupleToOrders</span> <span onmouseout="hideTip(event, 'fs96', 226)" onmouseover="showTip(event, 'fs96', 226)" class="i">ts</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs96', 227)" onmouseover="showTip(event, 'fs96', 227)" class="i">ts</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs8', 228)" onmouseover="showTip(event, 'fs8', 228)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs89', 229)" onmouseover="showTip(event, 'fs89', 229)" class="i">map</span>(<span class="k">fun</span> (<span onmouseout="hideTip(event, 'fs97', 230)" onmouseover="showTip(event, 'fs97', 230)" class="i">t</span>, <span onmouseout="hideTip(event, 'fs92', 231)" onmouseover="showTip(event, 'fs92', 231)" class="i">p</span>, <span onmouseout="hideTip(event, 'fs98', 232)" onmouseover="showTip(event, 'fs98', 232)" class="i">b</span>, <span onmouseout="hideTip(event, 'fs93', 233)" onmouseover="showTip(event, 'fs93', 233)" class="i">s</span>, <span onmouseout="hideTip(event, 'fs99', 234)" onmouseover="showTip(event, 'fs99', 234)" class="i">br</span>, <span onmouseout="hideTip(event, 'fs100', 235)" onmouseover="showTip(event, 'fs100', 235)" class="i">sr</span>, <span onmouseout="hideTip(event, 'fs101', 236)" onmouseover="showTip(event, 'fs101', 236)" class="i">bd</span>, <span onmouseout="hideTip(event, 'fs102', 237)" onmouseover="showTip(event, 'fs102', 237)" class="i">ad</span>) <span class="k">-&gt;</span>
+                      {<span onmouseout="hideTip(event, 'fs81', 238)" onmouseover="showTip(event, 'fs81', 238)" class="i">OrdInfer</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs103', 239)" onmouseover="showTip(event, 'fs103', 239)" class="i">dfltOrder</span> <span class="k">with</span> <span class="i">time</span><span class="o">=</span><span onmouseout="hideTip(event, 'fs97', 240)" onmouseover="showTip(event, 'fs97', 240)" class="i">t</span>;       <span class="i">price</span><span class="o">=</span><span onmouseout="hideTip(event, 'fs92', 241)" onmouseover="showTip(event, 'fs92', 241)" class="i">p</span>; 
+                                               <span class="i">buySize</span><span class="o">=</span><span onmouseout="hideTip(event, 'fs98', 242)" onmouseover="showTip(event, 'fs98', 242)" class="i">b</span>;    <span class="i">sellSize</span><span class="o">=</span><span onmouseout="hideTip(event, 'fs93', 243)" onmouseover="showTip(event, 'fs93', 243)" class="i">s</span>; 
+                                               <span class="i">buyReduce</span><span class="o">=</span><span onmouseout="hideTip(event, 'fs99', 244)" onmouseover="showTip(event, 'fs99', 244)" class="i">br</span>; <span class="i">sellReduce</span><span class="o">=</span><span onmouseout="hideTip(event, 'fs100', 245)" onmouseover="showTip(event, 'fs100', 245)" class="i">sr</span>; 
+                                               <span class="i">bidDepth</span><span class="o">=</span><span onmouseout="hideTip(event, 'fs101', 246)" onmouseover="showTip(event, 'fs101', 246)" class="i">bd</span>;  <span class="i">askDepth</span><span class="o">=</span><span onmouseout="hideTip(event, 'fs102', 247)" onmouseover="showTip(event, 'fs102', 247)" class="i">ad</span>})</pre>
+</td>
+</tr>
+</table>
+
+<p>Next, we'll write some functions to pipe our sequence of <code>Ticks</code>  through our system under test
+ <code>processTick</code> and return a tuple containing two lists of type <code>OrderBook</code>, and <code>Order</code>. These
+ are the results of our sequence unit tests.</p>
+
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l">1: </span>
+<span class="l">2: </span>
+<span class="l">3: </span>
+<span class="l">4: </span>
+<span class="l">5: </span>
+<span class="l">6: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs104', 248)" onmouseover="showTip(event, 'fs104', 248)" class="i">results</span> <span onmouseout="hideTip(event, 'fs105', 249)" onmouseover="showTip(event, 'fs105', 249)" class="i">data</span> <span class="o">=</span>
+        <span class="k">let</span> <span onmouseout="hideTip(event, 'fs106', 250)" onmouseover="showTip(event, 'fs106', 250)" class="i">ss</span>, <span onmouseout="hideTip(event, 'fs107', 251)" onmouseover="showTip(event, 'fs107', 251)" class="i">oss</span> <span class="o">=</span> <span class="c">// oss is list of list. Easier to handle if just list</span>
+            <span onmouseout="hideTip(event, 'fs105', 252)" onmouseover="showTip(event, 'fs105', 252)" class="i">data</span> 
+            <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs8', 253)" onmouseover="showTip(event, 'fs8', 253)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs9', 254)" onmouseover="showTip(event, 'fs9', 254)" class="i">scan</span> (<span class="k">fun</span> (<span onmouseout="hideTip(event, 'fs108', 255)" onmouseover="showTip(event, 'fs108', 255)" class="i">ob</span>, <span onmouseout="hideTip(event, 'fs109', 256)" onmouseover="showTip(event, 'fs109', 256)" class="i">os</span>) <span onmouseout="hideTip(event, 'fs110', 257)" onmouseover="showTip(event, 'fs110', 257)" class="i">t</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs81', 258)" onmouseover="showTip(event, 'fs81', 258)" class="i">OrdInfer</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs111', 259)" onmouseover="showTip(event, 'fs111', 259)" class="i">processTick</span> <span onmouseout="hideTip(event, 'fs108', 260)" onmouseover="showTip(event, 'fs108', 260)" class="i">ob</span> <span onmouseout="hideTip(event, 'fs110', 261)" onmouseover="showTip(event, 'fs110', 261)" class="i">t</span>) (<span onmouseout="hideTip(event, 'fs112', 262)" onmouseover="showTip(event, 'fs112', 262)" class="i">initialMkt</span>, []) 
+            <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs8', 263)" onmouseover="showTip(event, 'fs8', 263)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs12', 264)" onmouseover="showTip(event, 'fs12', 264)" class="i">tail</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs8', 265)" onmouseover="showTip(event, 'fs8', 265)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs13', 266)" onmouseover="showTip(event, 'fs13', 266)" class="i">unzip</span> 
+        <span onmouseout="hideTip(event, 'fs106', 267)" onmouseover="showTip(event, 'fs106', 267)" class="i">ss</span>, (<span onmouseout="hideTip(event, 'fs107', 268)" onmouseover="showTip(event, 'fs107', 268)" class="i">oss</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs8', 269)" onmouseover="showTip(event, 'fs8', 269)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs113', 270)" onmouseover="showTip(event, 'fs113', 270)" class="i">fold</span> (<span class="k">fun</span> <span onmouseout="hideTip(event, 'fs114', 271)" onmouseover="showTip(event, 'fs114', 271)" class="i">o</span> <span onmouseout="hideTip(event, 'fs115', 272)" onmouseover="showTip(event, 'fs115', 272)" class="i">ol</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs114', 273)" onmouseover="showTip(event, 'fs114', 273)" class="i">o</span> <span class="o">@</span> <span onmouseout="hideTip(event, 'fs115', 274)" onmouseover="showTip(event, 'fs115', 274)" class="i">ol</span>) []) <span class="c">// list of list -&gt; list </span></pre>
+</td>
+</tr>
+</table>
+
+<p>Finally, we write some simple list comparison functions. F# lists already implement
+equality, so the basic comparision function is simple.</p>
+
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l">1: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs116', 275)" onmouseover="showTip(event, 'fs116', 275)" class="i">listsMatch</span> (<span onmouseout="hideTip(event, 'fs117', 276)" onmouseover="showTip(event, 'fs117', 276)" class="i">ls1</span><span class="o">:</span> <span class="o">&#39;</span><span class="i">a</span> <span onmouseout="hideTip(event, 'fs31', 277)" onmouseover="showTip(event, 'fs31', 277)" class="i">list</span>) (<span onmouseout="hideTip(event, 'fs118', 278)" onmouseover="showTip(event, 'fs118', 278)" class="i">ls2</span><span class="o">:</span> <span class="o">&#39;</span><span class="i">a</span> <span onmouseout="hideTip(event, 'fs31', 279)" onmouseover="showTip(event, 'fs31', 279)" class="i">list</span>) <span class="o">=</span> <span onmouseout="hideTip(event, 'fs117', 280)" onmouseover="showTip(event, 'fs117', 280)" class="i">ls1</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs118', 281)" onmouseover="showTip(event, 'fs118', 281)" class="i">ls2</span></pre>
+</td>
+</tr>
+</table>
+
+<p>I have also included an additional custom comparison where the list are first sorted.</p>
+
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l">1: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs119', 282)" onmouseover="showTip(event, 'fs119', 282)" class="i">listsMatchIfSorted</span> <span onmouseout="hideTip(event, 'fs120', 283)" onmouseover="showTip(event, 'fs120', 283)" class="i">ls1</span> <span onmouseout="hideTip(event, 'fs121', 284)" onmouseover="showTip(event, 'fs121', 284)" class="i">ls2</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs116', 285)" onmouseover="showTip(event, 'fs116', 285)" class="i">listsMatch</span> (<span onmouseout="hideTip(event, 'fs120', 286)" onmouseover="showTip(event, 'fs120', 286)" class="i">ls1</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs8', 287)" onmouseover="showTip(event, 'fs8', 287)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs122', 288)" onmouseover="showTip(event, 'fs122', 288)" class="i">sort</span>) (<span onmouseout="hideTip(event, 'fs121', 289)" onmouseover="showTip(event, 'fs121', 289)" class="i">ls2</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs8', 290)" onmouseover="showTip(event, 'fs8', 290)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs122', 291)" onmouseover="showTip(event, 'fs122', 291)" class="i">sort</span>)</pre>
+</td>
+</tr>
+</table>
+
+<p>Often, it helps to know if your sequence tests are failing because the order is different
+or because the values themselves are different. Running both these unit tests
+together makes that very clear.</p>
 
 <table class="pre"><tr><td class="lines"><pre class="fssnip">
 <span class="l"> 1: </span>
@@ -365,49 +558,47 @@ can be tested uses the same set of unit tests.</p>
 <span class="l">17: </span>
 <span class="l">18: </span>
 <span class="l">19: </span>
-<span class="l">20: </span>
-<span class="l">21: </span>
-<span class="l">22: </span>
-<span class="l">23: </span>
-<span class="l">24: </span>
-<span class="l">25: </span>
-<span class="l">26: </span>
-<span class="l">27: </span>
 </pre>
 </td>
 <td class="snippet"><pre class="fssnip">
-<span class="k">type</span> <span class="i">``processTick() Tests for a Bid quote``</span> () <span class="o">=</span> 
+    [&lt;<span class="i">TestCaseSource</span>(<span class="s">&quot;</span><span class="s">TestCases</span><span class="s">&quot;</span>)&gt;]
+    <span class="k">member</span> <span onmouseout="hideTip(event, 'fs127', 353)" onmouseover="showTip(event, 'fs127', 353)" class="i">x</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs128', 354)" onmouseover="showTip(event, 'fs128', 354)" class="i">``ProcessTick() returns correct Order list``</span> 
+        (<span onmouseout="hideTip(event, 'fs129', 355)" onmouseover="showTip(event, 'fs129', 355)" class="i">testData</span><span class="o">:</span> (<span onmouseout="hideTip(event, 'fs43', 356)" onmouseover="showTip(event, 'fs43', 356)" class="i">DateTime</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs130', 357)" onmouseover="showTip(event, 'fs130', 357)" class="i">string</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs23', 358)" onmouseover="showTip(event, 'fs23', 358)" class="i">float</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs46', 359)" onmouseover="showTip(event, 'fs46', 359)" class="i">int</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs46', 360)" onmouseover="showTip(event, 'fs46', 360)" class="i">int</span>) <span onmouseout="hideTip(event, 'fs31', 361)" onmouseover="showTip(event, 'fs31', 361)" class="i">list</span> <span class="o">*</span> (<span onmouseout="hideTip(event, 'fs43', 362)" onmouseover="showTip(event, 'fs43', 362)" class="i">DateTime</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs23', 363)" onmouseover="showTip(event, 'fs23', 363)" class="i">float</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs46', 364)" onmouseover="showTip(event, 'fs46', 364)" class="i">int</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs46', 365)" onmouseover="showTip(event, 'fs46', 365)" class="i">int</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs46', 366)" onmouseover="showTip(event, 'fs46', 366)" class="i">int</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs46', 367)" onmouseover="showTip(event, 'fs46', 367)" class="i">int</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs46', 368)" onmouseover="showTip(event, 'fs46', 368)" class="i">int</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs46', 369)" onmouseover="showTip(event, 'fs46', 369)" class="i">int</span>) <span onmouseout="hideTip(event, 'fs31', 370)" onmouseover="showTip(event, 'fs31', 370)" class="i">list</span>) <span class="o">=</span> 
+        
+        <span class="k">let</span> <span onmouseout="hideTip(event, 'fs131', 371)" onmouseover="showTip(event, 'fs131', 371)" class="i">rawData</span>, <span onmouseout="hideTip(event, 'fs132', 372)" onmouseover="showTip(event, 'fs132', 372)" class="i">rawExpectedResults</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs129', 373)" onmouseover="showTip(event, 'fs129', 373)" class="i">testData</span>
+        <span class="k">let</span> <span onmouseout="hideTip(event, 'fs133', 374)" onmouseover="showTip(event, 'fs133', 374)" class="i">states</span>, <span onmouseout="hideTip(event, 'fs134', 375)" onmouseover="showTip(event, 'fs134', 375)" class="i">orders</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs131', 376)" onmouseover="showTip(event, 'fs131', 376)" class="i">rawData</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs135', 377)" onmouseover="showTip(event, 'fs135', 377)" class="i">uTest_Helper</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs87', 378)" onmouseover="showTip(event, 'fs87', 378)" class="i">tupleToTicks</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs135', 379)" onmouseover="showTip(event, 'fs135', 379)" class="i">uTest_Helper</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs104', 380)" onmouseover="showTip(event, 'fs104', 380)" class="i">results</span>
+        <span class="k">let</span> <span onmouseout="hideTip(event, 'fs136', 381)" onmouseover="showTip(event, 'fs136', 381)" class="i">expectedResults</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs132', 382)" onmouseover="showTip(event, 'fs132', 382)" class="i">rawExpectedResults</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs135', 383)" onmouseover="showTip(event, 'fs135', 383)" class="i">uTest_Helper</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs95', 384)" onmouseover="showTip(event, 'fs95', 384)" class="i">tupleToOrders</span>
+         
+        <span onmouseout="hideTip(event, 'fs135', 385)" onmouseover="showTip(event, 'fs135', 385)" class="i">uTest_Helper</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs116', 386)" onmouseover="showTip(event, 'fs116', 386)" class="i">listsMatch</span> <span onmouseout="hideTip(event, 'fs134', 387)" onmouseover="showTip(event, 'fs134', 387)" class="i">orders</span> <span onmouseout="hideTip(event, 'fs136', 388)" onmouseover="showTip(event, 'fs136', 388)" class="i">expectedResults</span> <span class="o">|&gt;</span> <span class="i">should</span> <span class="i">be</span> <span class="i">True</span>
 
-    <span class="c">// market setup included for reference</span>
-    <span class="c">// tckSz,  bid2,    bidSz2,  bid1,    bidSz1, last,   lsSz,  ask1,    askSz1,  ask2,     askSz2</span>
-    <span class="c">// 10.,    15040.,  100,     15050.,  100,    15060., 0,     15070.,  100,     15080.,   100</span>
-    <span class="k">let</span> <span onmouseout="hideTip(event, 'fs75', 160)" onmouseover="showTip(event, 'fs75', 160)" class="i">mkt</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs76', 161)" onmouseover="showTip(event, 'fs76', 161)" class="i">Helper</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs77', 162)" onmouseover="showTip(event, 'fs77', 162)" class="i">initialMkt</span> <span class="c">// returns the a sample state to test against (as above)</span>
+    [&lt;<span class="i">TestCaseSource</span>(<span class="s">&quot;</span><span class="s">TestCases</span><span class="s">&quot;</span>)&gt;]
+    <span class="k">member</span> <span onmouseout="hideTip(event, 'fs127', 389)" onmouseover="showTip(event, 'fs127', 389)" class="i">x</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs137', 390)" onmouseover="showTip(event, 'fs137', 390)" class="i">``ProcessTick() returns expected orders when sorted``</span> 
+        (<span onmouseout="hideTip(event, 'fs129', 391)" onmouseover="showTip(event, 'fs129', 391)" class="i">testData</span><span class="o">:</span> (<span onmouseout="hideTip(event, 'fs43', 392)" onmouseover="showTip(event, 'fs43', 392)" class="i">DateTime</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs130', 393)" onmouseover="showTip(event, 'fs130', 393)" class="i">string</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs23', 394)" onmouseover="showTip(event, 'fs23', 394)" class="i">float</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs46', 395)" onmouseover="showTip(event, 'fs46', 395)" class="i">int</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs46', 396)" onmouseover="showTip(event, 'fs46', 396)" class="i">int</span>) <span onmouseout="hideTip(event, 'fs31', 397)" onmouseover="showTip(event, 'fs31', 397)" class="i">list</span> <span class="o">*</span> (<span onmouseout="hideTip(event, 'fs43', 398)" onmouseover="showTip(event, 'fs43', 398)" class="i">DateTime</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs23', 399)" onmouseover="showTip(event, 'fs23', 399)" class="i">float</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs46', 400)" onmouseover="showTip(event, 'fs46', 400)" class="i">int</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs46', 401)" onmouseover="showTip(event, 'fs46', 401)" class="i">int</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs46', 402)" onmouseover="showTip(event, 'fs46', 402)" class="i">int</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs46', 403)" onmouseover="showTip(event, 'fs46', 403)" class="i">int</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs46', 404)" onmouseover="showTip(event, 'fs46', 404)" class="i">int</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs46', 405)" onmouseover="showTip(event, 'fs46', 405)" class="i">int</span>) <span onmouseout="hideTip(event, 'fs31', 406)" onmouseover="showTip(event, 'fs31', 406)" class="i">list</span>) <span class="o">=</span> 
 
-    <span class="k">static</span> <span class="k">member</span> <span onmouseout="hideTip(event, 'fs78', 163)" onmouseover="showTip(event, 'fs78', 163)" class="i">TestCases</span> <span class="o">=</span> 
-        [|
-            <span class="c">// Case 1: single event -&gt; single effect</span>
-            [| [(<span class="s">&quot;</span><span class="s">Bid</span><span class="s">&quot;</span>,<span class="n">15050.</span>, <span class="n">50</span>,<span class="n">1</span>);], ([ (<span class="n">15050.</span>,   <span class="n">0</span>,  <span class="n">0</span>, <span class="o">-</span><span class="n">50</span>,   <span class="n">0</span>, <span class="n">1</span>, <span class="n">0</span>);]) |]; <span class="c">// best bid decrease</span>
+        <span class="k">let</span> <span onmouseout="hideTip(event, 'fs131', 407)" onmouseover="showTip(event, 'fs131', 407)" class="i">rawData</span>, <span onmouseout="hideTip(event, 'fs132', 408)" onmouseover="showTip(event, 'fs132', 408)" class="i">rawExpectedResults</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs129', 409)" onmouseover="showTip(event, 'fs129', 409)" class="i">testData</span>
+        <span class="k">let</span> <span onmouseout="hideTip(event, 'fs133', 410)" onmouseover="showTip(event, 'fs133', 410)" class="i">states</span>, <span onmouseout="hideTip(event, 'fs134', 411)" onmouseover="showTip(event, 'fs134', 411)" class="i">orders</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs131', 412)" onmouseover="showTip(event, 'fs131', 412)" class="i">rawData</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs135', 413)" onmouseover="showTip(event, 'fs135', 413)" class="i">uTest_Helper</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs87', 414)" onmouseover="showTip(event, 'fs87', 414)" class="i">tupleToTicks</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs135', 415)" onmouseover="showTip(event, 'fs135', 415)" class="i">uTest_Helper</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs104', 416)" onmouseover="showTip(event, 'fs104', 416)" class="i">results</span>
+        <span class="k">let</span> <span onmouseout="hideTip(event, 'fs136', 417)" onmouseover="showTip(event, 'fs136', 417)" class="i">expectedResults</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs132', 418)" onmouseover="showTip(event, 'fs132', 418)" class="i">rawExpectedResults</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs135', 419)" onmouseover="showTip(event, 'fs135', 419)" class="i">uTest_Helper</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs95', 420)" onmouseover="showTip(event, 'fs95', 420)" class="i">tupleToOrders</span>
 
-            <span class="c">// Case 2: single event -&gt; multiple effects</span>
-            [| [(<span class="s">&quot;</span><span class="s">Bid</span><span class="s">&quot;</span>,<span class="n">15040.</span>, <span class="n">50</span>,<span class="n">1</span>);], ([ (<span class="n">15050.</span>,   <span class="n">0</span>,  <span class="n">0</span>,<span class="o">-</span><span class="n">100</span>,   <span class="n">0</span>, <span class="n">1</span>, <span class="n">0</span>);(<span class="n">15040.</span>, <span class="n">0</span>, <span class="n">0</span>, <span class="o">-</span><span class="n">50</span>, <span class="n">0</span>, <span class="n">1</span>, <span class="n">0</span>);]) |]; 
-
-             <span class="c">// Case 3: multiple events -&gt; multiple effects</span>
-            [| [ (<span class="s">&quot;</span><span class="s">Trade</span><span class="s">&quot;</span>, <span class="n">15070.</span>, <span class="n">110</span>, <span class="n">1</span>);
-                 (<span class="s">&quot;</span><span class="s">Bid</span><span class="s">&quot;</span>  , <span class="n">15070.</span>,  <span class="n">10</span>, <span class="n">1</span>);
-                 (<span class="s">&quot;</span><span class="s">Ask</span><span class="s">&quot;</span>  , <span class="n">15080.</span>, <span class="n">100</span>, <span class="n">1</span>);], 
-
-               <span class="c">// my expected resppnse     </span>
-               ([( <span class="n">15070.0</span>, <span class="n">110</span>, <span class="n">10</span>,   <span class="n">0</span>,    <span class="n">0</span>, <span class="n">0</span>, <span class="n">0</span>);
-                 ( <span class="n">15070.0</span>,  <span class="n">10</span>,  <span class="n">0</span>,   <span class="n">0</span>, <span class="o">-</span><span class="n">100</span>, <span class="n">1</span>, <span class="n">0</span>);
-                 ( <span class="n">15080.0</span>,   <span class="n">0</span>, <span class="n">20</span>,   <span class="n">0</span>,    <span class="n">0</span>, <span class="n">0</span>, <span class="n">1</span>);
-                 ( <span class="n">15070.0</span>,   <span class="n">0</span>,  <span class="n">0</span>, <span class="o">-</span><span class="n">10</span>,    <span class="n">0</span>, <span class="n">0</span>, <span class="n">1</span>);]) |];
-        |]
-    </pre>
+        <span onmouseout="hideTip(event, 'fs135', 421)" onmouseover="showTip(event, 'fs135', 421)" class="i">uTest_Helper</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs119', 422)" onmouseover="showTip(event, 'fs119', 422)" class="i">listsMatchIfSorted</span> <span onmouseout="hideTip(event, 'fs134', 423)" onmouseover="showTip(event, 'fs134', 423)" class="i">orders</span> <span onmouseout="hideTip(event, 'fs136', 424)" onmouseover="showTip(event, 'fs136', 424)" class="i">expectedResults</span> <span class="o">|&gt;</span> <span class="i">should</span> <span class="i">be</span> <span class="i">True</span>      </pre>
 </td>
 </tr>
 </table>
 
-<h2>If you're reading this please note.. this is a draft... to be completed soon... I hope...</h2>
+<p>Here's an example using Xamarin's Nunit test runner. 
+The list equality test failed, but the pre-sorted list equality test passed
+indicating there is a problem with the order, but not the values</p>
+
+<p><img src="assets/UnitTestExample-1.jpg" alt="Alt text" title="Priceless" /></p>
+
+<h2>In Summary</h2>
+
+<p>This approach demonstrates how to use <code>[&lt;TestCaseSource&gt;]</code> and some simple list operations such as
+<code>List.scan</code> and <code>List.fold</code> to unit test a sequence of events.</p>
+
+<p>There are many more elaborate tests that can be done using this pattern. You could check for 
+matching buySize, or some other field in the record. With the initial helper functions in place, 
+writing custom comparison functions becomes very easy and List operations provide an elegant way to
+iterate through your test sequences.</p>
 
           <div class="tip" id="fs1">namespace System</div>
 <div class="tip" id="fs2">val modifyStateAndProduceEffect : state:float -&gt; modifier:float -&gt; float * float<br /><br />Full name: OrderInfer.Tests.SimpleExample.modifyStateAndProduceEffect</div>
@@ -449,29 +640,29 @@ can be tested uses the same set of unit tests.</p>
 <div class="tip" id="fs38">module SimpleExample<br /><br />from OrderInfer.Tests</div>
 <div class="tip" id="fs39">property List.Length: int</div>
 <div class="tip" id="fs40">member A Sample Test.( Results in list approximiately match expected results ) : testData:(float list * float list) -&gt; &#39;a<br /><br />Full name: OrderInfer.Tests.A Sample Test.( Results in list approximiately match expected results )</div>
-<div class="tip" id="fs41">type Trade =<br />&#160;&#160;{time: DateTime;<br />&#160;&#160;&#160;price: float;<br />&#160;&#160;&#160;size: int;}<br /><br />Full name: OrderInfer.Tests.OrderInference.Trade</div>
+<div class="tip" id="fs41">type Trade =<br />&#160;&#160;{time: DateTime;<br />&#160;&#160;&#160;price: float;<br />&#160;&#160;&#160;size: int;}<br /><br />Full name: OrderInfer.Tests.OrdInfer.Trade</div>
 <div class="tip" id="fs42">Trade.time: DateTime</div>
 <div class="tip" id="fs43">Multiple items<br />type DateTime =<br />&#160;&#160;struct<br />&#160;&#160;&#160;&#160;new : ticks:int64 -&gt; DateTime + 10 overloads<br />&#160;&#160;&#160;&#160;member Add : value:TimeSpan -&gt; DateTime<br />&#160;&#160;&#160;&#160;member AddDays : value:float -&gt; DateTime<br />&#160;&#160;&#160;&#160;member AddHours : value:float -&gt; DateTime<br />&#160;&#160;&#160;&#160;member AddMilliseconds : value:float -&gt; DateTime<br />&#160;&#160;&#160;&#160;member AddMinutes : value:float -&gt; DateTime<br />&#160;&#160;&#160;&#160;member AddMonths : months:int -&gt; DateTime<br />&#160;&#160;&#160;&#160;member AddSeconds : value:float -&gt; DateTime<br />&#160;&#160;&#160;&#160;member AddTicks : value:int64 -&gt; DateTime<br />&#160;&#160;&#160;&#160;member AddYears : value:int -&gt; DateTime<br />&#160;&#160;&#160;&#160;...<br />&#160;&#160;end<br /><br />Full name: System.DateTime<br /><br />--------------------<br />DateTime()<br />&#160;&#160;&#160;<em>(+0 other overloads)</em><br />DateTime(ticks: int64) : unit<br />&#160;&#160;&#160;<em>(+0 other overloads)</em><br />DateTime(ticks: int64, kind: DateTimeKind) : unit<br />&#160;&#160;&#160;<em>(+0 other overloads)</em><br />DateTime(year: int, month: int, day: int) : unit<br />&#160;&#160;&#160;<em>(+0 other overloads)</em><br />DateTime(year: int, month: int, day: int, calendar: Globalization.Calendar) : unit<br />&#160;&#160;&#160;<em>(+0 other overloads)</em><br />DateTime(year: int, month: int, day: int, hour: int, minute: int, second: int) : unit<br />&#160;&#160;&#160;<em>(+0 other overloads)</em><br />DateTime(year: int, month: int, day: int, hour: int, minute: int, second: int, millisecond: int) : unit<br />&#160;&#160;&#160;<em>(+0 other overloads)</em><br />DateTime(year: int, month: int, day: int, hour: int, minute: int, second: int, calendar: Globalization.Calendar) : unit<br />&#160;&#160;&#160;<em>(+0 other overloads)</em><br />DateTime(year: int, month: int, day: int, hour: int, minute: int, second: int, kind: DateTimeKind) : unit<br />&#160;&#160;&#160;<em>(+0 other overloads)</em><br />DateTime(year: int, month: int, day: int, hour: int, minute: int, second: int, millisecond: int, calendar: Globalization.Calendar) : unit<br />&#160;&#160;&#160;<em>(+0 other overloads)</em></div>
 <div class="tip" id="fs44">Trade.price: float</div>
 <div class="tip" id="fs45">Trade.size: int</div>
 <div class="tip" id="fs46">Multiple items<br />val int : value:&#39;T -&gt; int (requires member op_Explicit)<br /><br />Full name: Microsoft.FSharp.Core.Operators.int<br /><br />--------------------<br />type int&lt;&#39;Measure&gt; = int<br /><br />Full name: Microsoft.FSharp.Core.int&lt;_&gt;<br /><br />--------------------<br />type int = int32<br /><br />Full name: Microsoft.FSharp.Core.int</div>
-<div class="tip" id="fs47">type Quote =<br />&#160;&#160;{time: DateTime;<br />&#160;&#160;&#160;price: float;<br />&#160;&#160;&#160;size: int;<br />&#160;&#160;&#160;depth: int;}<br /><br />Full name: OrderInfer.Tests.OrderInference.Quote</div>
+<div class="tip" id="fs47">type Quote =<br />&#160;&#160;{time: DateTime;<br />&#160;&#160;&#160;price: float;<br />&#160;&#160;&#160;size: int;<br />&#160;&#160;&#160;depth: int;}<br /><br />Full name: OrderInfer.Tests.OrdInfer.Quote</div>
 <div class="tip" id="fs48">Quote.time: DateTime</div>
 <div class="tip" id="fs49">Quote.price: float</div>
 <div class="tip" id="fs50">Quote.size: int</div>
 <div class="tip" id="fs51">Quote.depth: int</div>
-<div class="tip" id="fs52">type Tick =<br />&#160;&#160;| Bid of Quote<br />&#160;&#160;| Ask of Quote<br />&#160;&#160;| Trade of Trade<br /><br />Full name: OrderInfer.Tests.OrderInference.Tick</div>
+<div class="tip" id="fs52">type Tick =<br />&#160;&#160;| Bid of Quote<br />&#160;&#160;| Ask of Quote<br />&#160;&#160;| Trade of Trade<br /><br />Full name: OrderInfer.Tests.OrdInfer.Tick</div>
 <div class="tip" id="fs53">union case Tick.Bid: Quote -&gt; Tick</div>
 <div class="tip" id="fs54">union case Tick.Ask: Quote -&gt; Tick</div>
-<div class="tip" id="fs55">Multiple items<br />union case Tick.Trade: Trade -&gt; Tick<br /><br />--------------------<br />type Trade =<br />&#160;&#160;{time: DateTime;<br />&#160;&#160;&#160;price: float;<br />&#160;&#160;&#160;size: int;}<br /><br />Full name: OrderInfer.Tests.OrderInference.Trade</div>
-<div class="tip" id="fs56">type OrderBook =<br />&#160;&#160;{current: Market;<br />&#160;&#160;&#160;prices: Map&lt;float,PriceNode&gt;;<br />&#160;&#160;&#160;tickSize: float;}<br /><br />Full name: OrderInfer.Tests.OrderInference.OrderBook</div>
+<div class="tip" id="fs55">Multiple items<br />union case Tick.Trade: Trade -&gt; Tick<br /><br />--------------------<br />type Trade =<br />&#160;&#160;{time: DateTime;<br />&#160;&#160;&#160;price: float;<br />&#160;&#160;&#160;size: int;}<br /><br />Full name: OrderInfer.Tests.OrdInfer.Trade</div>
+<div class="tip" id="fs56">type OrderBook =<br />&#160;&#160;{current: Market;<br />&#160;&#160;&#160;prices: Map&lt;float,PriceNode&gt;;<br />&#160;&#160;&#160;tickSize: float;}<br /><br />Full name: OrderInfer.Tests.OrdInfer.OrderBook</div>
 <div class="tip" id="fs57">OrderBook.current: Market</div>
-<div class="tip" id="fs58">type Market =<br />&#160;&#160;{time: DateTime;<br />&#160;&#160;&#160;last: float;<br />&#160;&#160;&#160;bestBid: float;<br />&#160;&#160;&#160;bestAsk: float;<br />&#160;&#160;&#160;isOpen: bool;<br />&#160;&#160;&#160;isInit: bool;}<br /><br />Full name: OrderInfer.Tests.OrderInference.Market</div>
+<div class="tip" id="fs58">type Market =<br />&#160;&#160;{time: DateTime;<br />&#160;&#160;&#160;last: float;<br />&#160;&#160;&#160;bestBid: float;<br />&#160;&#160;&#160;bestAsk: float;<br />&#160;&#160;&#160;isOpen: bool;<br />&#160;&#160;&#160;isInit: bool;}<br /><br />Full name: OrderInfer.Tests.OrdInfer.Market</div>
 <div class="tip" id="fs59">OrderBook.prices: Map&lt;float,PriceNode&gt;</div>
 <div class="tip" id="fs60">Multiple items<br />module Map<br /><br />from Microsoft.FSharp.Collections<br /><br />--------------------<br />type Map&lt;&#39;Key,&#39;Value (requires comparison)&gt; =<br />&#160;&#160;interface IEnumerable<br />&#160;&#160;interface IComparable<br />&#160;&#160;interface IEnumerable&lt;KeyValuePair&lt;&#39;Key,&#39;Value&gt;&gt;<br />&#160;&#160;interface ICollection&lt;KeyValuePair&lt;&#39;Key,&#39;Value&gt;&gt;<br />&#160;&#160;interface IDictionary&lt;&#39;Key,&#39;Value&gt;<br />&#160;&#160;new : elements:seq&lt;&#39;Key * &#39;Value&gt; -&gt; Map&lt;&#39;Key,&#39;Value&gt;<br />&#160;&#160;member Add : key:&#39;Key * value:&#39;Value -&gt; Map&lt;&#39;Key,&#39;Value&gt;<br />&#160;&#160;member ContainsKey : key:&#39;Key -&gt; bool<br />&#160;&#160;override Equals : obj -&gt; bool<br />&#160;&#160;member Remove : key:&#39;Key -&gt; Map&lt;&#39;Key,&#39;Value&gt;<br />&#160;&#160;...<br /><br />Full name: Microsoft.FSharp.Collections.Map&lt;_,_&gt;<br /><br />--------------------<br />new : elements:seq&lt;&#39;Key * &#39;Value&gt; -&gt; Map&lt;&#39;Key,&#39;Value&gt;</div>
-<div class="tip" id="fs61">type PriceNode =<br />&#160;&#160;{time: DateTime;<br />&#160;&#160;&#160;price: float;<br />&#160;&#160;&#160;bid: int;<br />&#160;&#160;&#160;ask: int;}<br /><br />Full name: OrderInfer.Tests.OrderInference.PriceNode</div>
+<div class="tip" id="fs61">type PriceNode =<br />&#160;&#160;{time: DateTime;<br />&#160;&#160;&#160;price: float;<br />&#160;&#160;&#160;bid: int;<br />&#160;&#160;&#160;ask: int;}<br /><br />Full name: OrderInfer.Tests.OrdInfer.PriceNode</div>
 <div class="tip" id="fs62">OrderBook.tickSize: float</div>
-<div class="tip" id="fs63">type Order =<br />&#160;&#160;{time: DateTime;<br />&#160;&#160;&#160;price: float;<br />&#160;&#160;&#160;buySize: int;<br />&#160;&#160;&#160;sellSize: int;<br />&#160;&#160;&#160;buyReduce: int;<br />&#160;&#160;&#160;sellReduce: int;<br />&#160;&#160;&#160;bidDepth: int;<br />&#160;&#160;&#160;askDepth: int;}<br /><br />Full name: OrderInfer.Tests.OrderInference.Order</div>
+<div class="tip" id="fs63">type Order =<br />&#160;&#160;{time: DateTime;<br />&#160;&#160;&#160;price: float;<br />&#160;&#160;&#160;buySize: int;<br />&#160;&#160;&#160;sellSize: int;<br />&#160;&#160;&#160;buyReduce: int;<br />&#160;&#160;&#160;sellReduce: int;<br />&#160;&#160;&#160;bidDepth: int;<br />&#160;&#160;&#160;askDepth: int;}<br /><br />Full name: OrderInfer.Tests.OrdInfer.Order</div>
 <div class="tip" id="fs64">Order.time: DateTime</div>
 <div class="tip" id="fs65">Order.price: float</div>
 <div class="tip" id="fs66">Order.buySize: int</div>
@@ -480,13 +671,72 @@ can be tested uses the same set of unit tests.</p>
 <div class="tip" id="fs69">Order.sellReduce: int</div>
 <div class="tip" id="fs70">Order.bidDepth: int</div>
 <div class="tip" id="fs71">Order.askDepth: int</div>
-<div class="tip" id="fs72">val processTick : orderBook:OrderBook -&gt; tick:Tick -&gt; OrderBook * Order list<br /><br />Full name: OrderInfer.Tests.OrderInference.processTick</div>
+<div class="tip" id="fs72">val processTick : orderBook:OrderBook -&gt; tick:Tick -&gt; OrderBook * Order list<br /><br />Full name: OrderInfer.Tests.OrdInfer.processTick</div>
 <div class="tip" id="fs73">val orderBook : OrderBook</div>
 <div class="tip" id="fs74">val tick : Tick</div>
-<div class="tip" id="fs75">val mkt : OrderInference.OrderBook</div>
-<div class="tip" id="fs76">module Helper<br /><br />from OrderInfer.Tests</div>
-<div class="tip" id="fs77">val initialMkt : OrderInference.OrderBook<br /><br />Full name: OrderInfer.Tests.Helper.initialMkt</div>
-<div class="tip" id="fs78">static member processTick() Tests for a Bid quote.TestCases : ((string * float * int * int) list * (float * int * int * int * int * int * int) list) [] []<br /><br />Full name: OrderInfer.Tests.processTick() Tests for a Bid quote.TestCases</div>
+<div class="tip" id="fs75">val getTick : time:DateTime -&gt; tickType:string -&gt; price:float -&gt; size:int -&gt; depth:int -&gt; OrdInfer.Tick<br /><br />Full name: OrderInfer.Tests.uTest_Helper.getTick</div>
+<div class="tip" id="fs76">val time : DateTime</div>
+<div class="tip" id="fs77">val tickType : string</div>
+<div class="tip" id="fs78">val price : float</div>
+<div class="tip" id="fs79">val size : int</div>
+<div class="tip" id="fs80">val depth : int</div>
+<div class="tip" id="fs81">module OrdInfer<br /><br />from OrderInfer.Tests</div>
+<div class="tip" id="fs82">union case OrdInfer.Tick.Bid: OrdInfer.Quote -&gt; OrdInfer.Tick</div>
+<div class="tip" id="fs83">val dfltQuote : OrdInfer.Quote<br /><br />Full name: OrderInfer.Tests.OrdInfer.dfltQuote</div>
+<div class="tip" id="fs84">union case OrdInfer.Tick.Ask: OrdInfer.Quote -&gt; OrdInfer.Tick</div>
+<div class="tip" id="fs85">Multiple items<br />union case OrdInfer.Tick.Trade: OrdInfer.Trade -&gt; OrdInfer.Tick<br /><br />--------------------<br />type Trade =<br />&#160;&#160;{time: DateTime;<br />&#160;&#160;&#160;price: float;<br />&#160;&#160;&#160;size: int;}<br /><br />Full name: OrderInfer.Tests.OrdInfer.Trade</div>
+<div class="tip" id="fs86">val dfltTrade : OrdInfer.Trade<br /><br />Full name: OrderInfer.Tests.OrdInfer.dfltTrade</div>
+<div class="tip" id="fs87">val tupleToTicks : ls:(DateTime * string * float * int * int) list -&gt; OrdInfer.Tick list<br /><br />Full name: OrderInfer.Tests.uTest_Helper.tupleToTicks</div>
+<div class="tip" id="fs88">val ls : (DateTime * string * float * int * int) list</div>
+<div class="tip" id="fs89">val map : mapping:(&#39;T -&gt; &#39;U) -&gt; list:&#39;T list -&gt; &#39;U list<br /><br />Full name: Microsoft.FSharp.Collections.List.map</div>
+<div class="tip" id="fs90">val tm : DateTime</div>
+<div class="tip" id="fs91">val t : string</div>
+<div class="tip" id="fs92">val p : float</div>
+<div class="tip" id="fs93">val s : int</div>
+<div class="tip" id="fs94">val d : int</div>
+<div class="tip" id="fs95">val tupleToOrders : ts:(DateTime * float * int * int * int * int * int * int) list -&gt; OrdInfer.Order list<br /><br />Full name: OrderInfer.Tests.uTest_Helper.tupleToOrders</div>
+<div class="tip" id="fs96">val ts : (DateTime * float * int * int * int * int * int * int) list</div>
+<div class="tip" id="fs97">val t : DateTime</div>
+<div class="tip" id="fs98">val b : int</div>
+<div class="tip" id="fs99">val br : int</div>
+<div class="tip" id="fs100">val sr : int</div>
+<div class="tip" id="fs101">val bd : int</div>
+<div class="tip" id="fs102">val ad : int</div>
+<div class="tip" id="fs103">val dfltOrder : OrdInfer.Order<br /><br />Full name: OrderInfer.Tests.OrdInfer.dfltOrder</div>
+<div class="tip" id="fs104">val results : data:OrdInfer.Tick list -&gt; OrdInfer.OrderBook list * OrdInfer.Order list<br /><br />Full name: OrderInfer.Tests.uTest_Helper.results</div>
+<div class="tip" id="fs105">val data : OrdInfer.Tick list</div>
+<div class="tip" id="fs106">val ss : OrdInfer.OrderBook list</div>
+<div class="tip" id="fs107">val oss : OrdInfer.Order list list</div>
+<div class="tip" id="fs108">val ob : OrdInfer.OrderBook</div>
+<div class="tip" id="fs109">val os : OrdInfer.Order list</div>
+<div class="tip" id="fs110">val t : OrdInfer.Tick</div>
+<div class="tip" id="fs111">val processTick : orderBook:OrdInfer.OrderBook -&gt; tick:OrdInfer.Tick -&gt; OrdInfer.OrderBook * OrdInfer.Order list<br /><br />Full name: OrderInfer.Tests.OrdInfer.processTick</div>
+<div class="tip" id="fs112">val initialMkt : OrdInfer.OrderBook<br /><br />Full name: OrderInfer.Tests.uTest_Helper.initialMkt</div>
+<div class="tip" id="fs113">val fold : folder:(&#39;State -&gt; &#39;T -&gt; &#39;State) -&gt; state:&#39;State -&gt; list:&#39;T list -&gt; &#39;State<br /><br />Full name: Microsoft.FSharp.Collections.List.fold</div>
+<div class="tip" id="fs114">val o : OrdInfer.Order list</div>
+<div class="tip" id="fs115">val ol : OrdInfer.Order list</div>
+<div class="tip" id="fs116">val listsMatch : ls1:&#39;a list -&gt; ls2:&#39;a list -&gt; bool (requires equality)<br /><br />Full name: OrderInfer.Tests.uTest_Helper.listsMatch</div>
+<div class="tip" id="fs117">val ls1 : &#39;a list (requires equality)</div>
+<div class="tip" id="fs118">val ls2 : &#39;a list (requires equality)</div>
+<div class="tip" id="fs119">val listsMatchIfSorted : ls1:&#39;a list -&gt; ls2:&#39;a list -&gt; bool (requires comparison)<br /><br />Full name: OrderInfer.Tests.uTest_Helper.listsMatchIfSorted</div>
+<div class="tip" id="fs120">val ls1 : &#39;a list (requires comparison)</div>
+<div class="tip" id="fs121">val ls2 : &#39;a list (requires comparison)</div>
+<div class="tip" id="fs122">val sort : list:&#39;T list -&gt; &#39;T list (requires comparison)<br /><br />Full name: Microsoft.FSharp.Collections.List.sort</div>
+<div class="tip" id="fs123">static member processTick() Tests for a Bid quote.TestCases : ((DateTime * string * float * int * int) list * (DateTime * float * int * int * int * int * int * int) list) [] []<br /><br />Full name: OrderInfer.Tests.processTick() Tests for a Bid quote.TestCases</div>
+<div class="tip" id="fs124">field DateTimeMinValue</div>
+<div class="tip" id="fs125">DateTime.AddTicks(value: int64) : DateTime</div>
+<div class="tip" id="fs126">Multiple items<br />val int64 : value:&#39;T -&gt; int64 (requires member op_Explicit)<br /><br />Full name: Microsoft.FSharp.Core.Operators.int64<br /><br />--------------------<br />type int64&lt;&#39;Measure&gt; = int64<br /><br />Full name: Microsoft.FSharp.Core.int64&lt;_&gt;<br /><br />--------------------<br />type int64 = Int64<br /><br />Full name: Microsoft.FSharp.Core.int64</div>
+<div class="tip" id="fs127">val x : processTick() Tests for a Bid quote</div>
+<div class="tip" id="fs128">member processTick() Tests for a Bid quote.( ProcessTick() returns correct Order list ) : testData:((DateTime * string * float * int * int) list * (DateTime * float * int * int * int * int * int * int) list) -&gt; &#39;b<br /><br />Full name: OrderInfer.Tests.processTick() Tests for a Bid quote.( ProcessTick() returns correct Order list )</div>
+<div class="tip" id="fs129">val testData : (DateTime * string * float * int * int) list * (DateTime * float * int * int * int * int * int * int) list</div>
+<div class="tip" id="fs130">Multiple items<br />val string : value:&#39;T -&gt; string<br /><br />Full name: Microsoft.FSharp.Core.Operators.string<br /><br />--------------------<br />type string = String<br /><br />Full name: Microsoft.FSharp.Core.string</div>
+<div class="tip" id="fs131">val rawData : (DateTime * string * float * int * int) list</div>
+<div class="tip" id="fs132">val rawExpectedResults : (DateTime * float * int * int * int * int * int * int) list</div>
+<div class="tip" id="fs133">val states : OrdInfer.OrderBook list</div>
+<div class="tip" id="fs134">val orders : OrdInfer.Order list</div>
+<div class="tip" id="fs135">module uTest_Helper<br /><br />from OrderInfer.Tests</div>
+<div class="tip" id="fs136">val expectedResults : OrdInfer.Order list</div>
+<div class="tip" id="fs137">member processTick() Tests for a Bid quote.( ProcessTick() returns expected orders when sorted ) : testData:((DateTime * string * float * int * int) list * (DateTime * float * int * int * int * int * int * int) list) -&gt; &#39;a<br /><br />Full name: OrderInfer.Tests.processTick() Tests for a Bid quote.( ProcessTick() returns expected orders when sorted )</div>
 
 
           <div id="disqus_thread"></div>
